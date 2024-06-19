@@ -21,8 +21,16 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
-            
+use App\Http\Controllers\PermanenciaController;
 
+Route::get('/permanencias/confirmar/{id}/{token}', [PermanenciaController::class, 'confirmarPermanencia'])->name('permanencias.confirmar');
+Route::post('/enviar-confirmacao', [PermanenciaController::class, 'enviarConfirmacao'])->name('enviar.confirmacao');
+Route::get('/permanencias/search', [PermanenciaController::class, 'search'])->name('permanencias.search');
+Route::get('tables', [PermanenciaController::class, 'index'])->middleware('auth')->name('tables');
+Route::get('permanencias/create', [PermanenciaController::class, 'create'])->name('permanencias.create');
+Route::post('permanencias', [PermanenciaController::class, 'store'])->name('permanencias.store');
+Route::get('auth/google', [SessionsController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [SessionsController::class, 'handleGoogleCallback']);
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
@@ -45,9 +53,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('billing', function () {
 		return view('pages.billing');
 	})->name('billing');
-	Route::get('tables', function () {
-		return view('pages.tables');
-	})->name('tables');
+	// Route::get('tables', function () {
+	// 	return view('pages.tables');
+	// })->name('tables');
 	Route::get('rtl', function () {
 		return view('pages.rtl');
 	})->name('rtl');

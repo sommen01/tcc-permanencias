@@ -1,4 +1,33 @@
 <x-layout bodyClass="bg-gray-200">
+    <style>
+        .google-btn {
+            display: flex;
+            align-items: center;
+            background-color: #4285F4;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            border: none;
+        }
+
+        .google-btn:hover {
+            background-color: #357ae8;
+            color: white;
+            text-decoration: none;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .fa-google {
+            color: red;
+        }
+    </style>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <div class="container position-sticky z-index-sticky top-0">
@@ -22,21 +51,24 @@
                                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1 ">
                                     <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">SOHPE - Sistema
                                         Gerenciador de Horários de Permanência</h4>
-                                    <div class="row mt-3 justify-content-center">
-                                        {{-- <h6 class='text-white text-center mb-3'>
-                                            <span class="font-weight-normal">Email:</span> admin@material.com
-                                            <br>
-                                            <span class="font-weight-normal">Password:</span> secret
-                                        </h6> --}}
-                                        <div class="row justify-content-center mb-4">
-                                            <button class="google-btn">
-                                                <div class="google-icon">
-                                                    <i class="fab fa-google"></i>
-                                                </div>
-                                                Logar com o Google
-                                            </button>
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger">
+                                            {{ session('error') }}
                                         </div>
+                                    @endif
+
+                                    <div class="row mt-3 justify-content-center">
+                                        <div class="row justify-content-center mb-4">
+                                            <a href="{{ url('auth/google') }}" class="btn btn-google google-btn">
+                                                <i class="fab fa-google google-icon"></i>
+                                                Logar com o Google
+                                            </a>
+                                        </div>
+
                                     </div>
+
+
                                 </div>
                                 <div class="card-body">
                                     <form role="form" method="POST" action="{{ route('login') }}"

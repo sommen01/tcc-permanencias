@@ -17,20 +17,49 @@ class PermanenciaController extends Controller
 
     private $client;
 
-        public function create()
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            $this->client = new Google_Client();
+            $this->client->setClientId(env('GOOGLE_CLIENT_ID'));
+            $this->client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+            $this->client->setRedirectUri(env('GOOGLE_REDIRECT_URL'));
+            $this->client->addScope(Google_Service_Calendar::CALENDAR_EVENTS);
+
+            if (session()->has('access_token')) {
+                $this->client->setAccessToken(session('access_token'));
+            }
+
+            if ($this->client->isAccessTokenExpired()) {
+                $refreshToken = session('refresh_token');
+                if ($refreshToken) {
+                    $this->client->fetchAccessTokenWithRefreshToken($refreshToken);
+                    session(['access_token' => $this->client->getAccessToken()]);
+                }
+            }
+
+            return $next($request);
+        });
+    }
+
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    // CRUD de Permanências
+
+    public function index()
+    {
+        $permanencias = Permanencia::all();
+        return view('pages.tables', compact('permanencias'));
+    }
+
+    public function create()
     {
         return view('permanencias.create');
     }
-    public function search(Request $request)
-    {
-        $query = $request->input('search');
-        $results = Permanencia::where('nome', 'LIKE', "%{$query}%")
-                    ->orWhere('email', 'LIKE', "%{$query}%")
-                    ->get();
-    
-        return view('seu_view', compact('results'));
-    }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -54,17 +83,46 @@ class PermanenciaController extends Controller
         return redirect()->route('tables')->with('success', 'Permanência criada com sucesso.');
     }
 
-
-    public function getClient()
+    public function edit($id)
     {
-        return $this->client;
+        $permanencia = Permanencia::findOrFail($id);
+        return view('permanencias.edit', compact('permanencia'));
     }
 
-    public function index()
+    public function update(Request $request, $id)
     {
-        $permanencias = Permanencia::all();
-        return view('pages.tables', compact('permanencias'));
+        $permanencia = Permanencia::findOrFail($id);
+
+        $request->validate([
+            'nome' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'status' => 'required|boolean',
+            'data' => 'required|date',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('public/images');
+            $permanencia->foto = $path;
+        }
+
+        $permanencia->nome = $request->nome;
+        $permanencia->email = $request->email;
+        $permanencia->status = $request->status;
+        $permanencia->data = $request->data;
+        $permanencia->save();
+
+        return redirect()->route('tables')->with('success', 'Permanência atualizada com sucesso.');
     }
+
+    public function destroy($id)
+    {
+        $permanencia = Permanencia::findOrFail($id);
+        $permanencia->delete();
+
+        return redirect()->route('tables')->with('success', 'Permanência excluída com sucesso.');
+    }
+
+    // Funções relacionadas ao Google Calendar
 
     public function enviarConfirmacao(Request $request)
     {
@@ -76,55 +134,55 @@ class PermanenciaController extends Controller
         $permanencias = Permanencia::whereIn('id', $request->input('permanencias'))->get();
     
         foreach ($permanencias as $permanencia) {
-            Mail::to($permanencia->email)->send(new ConfirmacaoPermanencia($permanencia));
+            $icsContent = $this->gerarConviteICalendar($permanencia);
+            
+            Mail::to($permanencia->email)
+                ->send(new ConfirmacaoPermanencia($permanencia, $icsContent));
         }
     
         return redirect()->back()->with('success', 'Emails de confirmação enviados com sucesso!');
     }
+
+    protected function gerarConviteICalendar($permanencia)
+    {
+        $startDateTime = Carbon::parse($permanencia->data);
+        $endDateTime = Carbon::parse($permanencia->data)->addHour();
     
+        $icsContent = "BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Example Corp.//NONSGML Event//EN
+BEGIN:VEVENT
+UID:" . uniqid() . "@example.com
+DTSTAMP:" . gmdate('Ymd').'T'. gmdate('His') . "Z
+DTSTART:" . $startDateTime->format('Ymd\THis\Z') . "
+DTEND:" . $endDateTime->format('Ymd\THis\Z') . "
+SUMMARY:Confirmação de Permanência para " . $permanencia->nome . "
+DESCRIPTION:Permanência confirmada para " . $permanencia->nome . "
+LOCATION:Local do Evento
+END:VEVENT
+END:VCALENDAR";
     
+        return $icsContent;
+
+    }
+
+
     public function confirmarPermanencia($id, $token)
     {
         $permanenciaId = decrypt($token);
 
         $permanencia = Permanencia::findOrFail($permanenciaId);
 
-        $client = $this->getClient();
-
-        $event = new Google_Service_Calendar_Event([
-            'summary' => 'Confirmação de Permanência para ' . $permanencia->nome,
-            'description' => 'Permanência confirmada para ' . $permanencia->nome,
-            'start' => [
-                'dateTime' => $permanencia->data->toIso8601String(),
-                'timeZone' => 'America/Sao_Paulo',
-            ],
-            'end' => [
-                'dateTime' => $permanencia->data->addHour()->toIso8601String(),
-                'timeZone' => 'America/Sao_Paulo',
-            ],
-        ]);
-
-        $calendarId = 'primary';
-        $service = new Google_Service_Calendar($client);
-        $event = $service->events->insert($calendarId, $event);
+        Mail::to($permanencia->email)->send(new ConfirmacaoPermanencia($permanencia));
+        $this->salvarEventoNoGoogleCalendar($permanencia);
 
         return redirect()->back()->with('success', 'Permanência confirmada e evento agendado no Google Calendar!');
     }
 
     protected function salvarEventoNoGoogleCalendar($permanencia)
     {
-        $client = new Google_Client();
-        $client->setClientId(env('GOOGLE_CLIENT_ID'));
-        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
-        $client->setRedirectUri(env('GOOGLE_REDIRECT_URL'));
-        $client->addScope(Google_Service_Calendar::CALENDAR_EVENTS);
-    
-        if (session()->has('access_token')) {
-            $client->setAccessToken(session('access_token'));
-        }
-    
-        $service = new Google_Service_Calendar($client);
-    
+        $client = $this->getClient();
+
         $event = new Google_Service_Calendar_Event([
             'summary' => 'Confirmação de Permanência para ' . $permanencia->nome,
             'description' => 'Permanência confirmada para ' . $permanencia->nome,
@@ -137,13 +195,10 @@ class PermanenciaController extends Controller
                 'timeZone' => 'America/Sao_Paulo',
             ],
         ]);
-    
+
+        $service = new Google_Service_Calendar($client);
         $calendarId = 'primary';
         $event = $service->events->insert($calendarId, $event);
     }
-
-
-    
 }
-
 

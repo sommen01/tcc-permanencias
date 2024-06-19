@@ -8,7 +8,7 @@
 
 <body>
     <h1>Confirmação de Permanência</h1>
-    <p>Olá {{ $nome }},</p>
+    <p>{{ $nome }},</p>
     <p>Sua permanência foi confirmada para a seguinte data: {{ $dataConfirmacao->format('d/m/Y H:i') }}.</p>
     <p>O evento foi agendado no Google Calendar.</p>
 </body>

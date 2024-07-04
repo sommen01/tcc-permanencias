@@ -95,16 +95,16 @@ class SessionsController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             $emailDomain = substr(strrchr($googleUser->getEmail(), "@"), 1);
-
+    
             $allowedDomains = ['estudante.ifms.edu.br', 'ifms.edu.br'];
             if (!in_array($emailDomain, $allowedDomains)) {
                 return redirect('/sign-in')->with('error', 'Apenas emails institucionais são permitidos.');
             }
-
+    
             $user = User::where('email', $googleUser->getEmail())->first();
-
+    
             $role = $emailDomain == 'estudante.ifms.edu.br' ? 'aluno' : 'professor';
-
+    
             if ($user) {
                 if (!$user->role) {
                     $user->role = $role;
@@ -119,15 +119,15 @@ class SessionsController extends Controller
                     'role' => $role,
                     'profile_completed' => $role == 'professor',
                 ]);
-
+    
                 Auth::login($user);
             }
-
+    
             if ($role == 'aluno' && !$user->profile_completed) {
                 return redirect('/complete-profile');
             }
-
-            return redirect('/tables');
+    
+            return redirect()->route('tables'); 
         } catch (\Exception $e) {
             return redirect('/sign-in')->with('error', 'Failed to login with Google: ' . $e->getMessage());
         }

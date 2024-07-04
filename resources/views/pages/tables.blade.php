@@ -16,8 +16,10 @@
                             <div
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3">Permanências</h6>
-                                <a href="{{ route('permanencias.create') }}"
-                                    class="btn btn-light text-primary me-3">Cadastrar Permanência</a>
+                                @if (auth()->user()->role === 'professor')
+                                    <a href="{{ route('permanencias.create') }}"
+                                        class="btn btn-light text-primary me-3">Cadastrar Permanência</a>
+                                @endif
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">

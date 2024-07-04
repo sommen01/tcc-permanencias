@@ -32,6 +32,9 @@ Route::post('enviar-confirmacao', [PermanenciaController::class, 'enviarConfirma
 
 Route::get('tables', [PermanenciaController::class, 'index'])->middleware('auth')->name('tables');
 
+Route::get('/home', function () {
+    return redirect()->route('tables'); 
+})->middleware('auth');
 
 Route::get('/complete-profile', [AlunoPerfilController::class, 'show'])->middleware('auth');
 Route::post('/complete-profile', [AlunoPerfilController::class, 'store'])->middleware('auth');

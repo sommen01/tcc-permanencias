@@ -74,6 +74,7 @@
         }
     </style>
 
+
     <div class="container position-sticky z-index-sticky top-0">
         <div class="row">
             <div class="col-12">
@@ -94,8 +95,7 @@
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
                                     <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Cadastro de
-                                        Permanência
-                                    </h4>
+                                        Permanência</h4>
 
                                     @if (session('error'))
                                         <div class="alert alert-danger">
@@ -110,6 +110,30 @@
                                         <div class="form-group">
                                             <label for="foto" class="form-label">Foto</label>
                                             <input type="file" class="form-control" name="foto" id="foto"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="dia_semana" class="form-label">Dia da Semana</label>
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="dia_semana" id="dia_semana" required>
+                                                    <option value="1">Segunda-feira</option>
+                                                    <option value="2">Terça-feira</option>
+                                                    <option value="3">Quarta-feira</option>
+                                                    <option value="4">Quinta-feira</option>
+                                                    <option value="5">Sexta-feira</option>
+                                                    <option value="6">Sábado</option>
+                                                    <option value="7">Domingo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hora_inicio" class="form-label">Hora de Início</label>
+                                            <input type="time" class="form-control" name="hora_inicio"
+                                                id="hora_inicio" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hora_fim" class="form-label">Hora de Término</label>
+                                            <input type="time" class="form-control" name="hora_fim" id="hora_fim"
                                                 required>
                                         </div>
                                         <div class="form-group">
@@ -154,7 +178,8 @@
                                                 id="email_do_professor" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="nome_do_professor" class="form-label">Nome do Professor</label>
+                                            <label for="nome_do_professor" class="form-label">Nome do
+                                                Professor</label>
                                             <input type="text" class="form-control" name="nome_do_professor"
                                                 id="nome_do_professor" required>
                                         </div>
@@ -165,14 +190,13 @@
                                                 <option value="0">Inativo</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="data" class="form-label">Data</label>
-                                            <input type="date" class="form-control" name="data" id="data"
-                                                required>
-                                        </div>
                                         <div class="text-center">
                                             <button type="submit"
                                                 class="btn bg-gradient-primary w-100 my-4 mb-2 btn-no-hover">Salvar</button>
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="javascript:history.back()"
+                                                class="btn bg-gradient-secondary w-100 my-2">Voltar</a>
                                         </div>
                                     </form>
                                 </div>

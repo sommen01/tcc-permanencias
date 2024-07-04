@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -8,9 +9,7 @@ class Permanencia extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['foto', 'nome', 'email', 'status', 'data'];
-
-    protected $dates = ['data'];
-
-    
+    protected $fillable = [
+        'foto', 'disciplina', 'email_do_professor', 'status', 'data', 'curso', 'turno', 'nome_do_professor'
+    ];
 }

@@ -22,11 +22,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\PermanenciaController;
+use App\Http\Controllers\AlunoPerfilController;
 
+
+
+
+Route::resource('permanencias', PermanenciaController::class);
+Route::post('enviar-confirmacao', [PermanenciaController::class, 'enviarConfirmacao'])->name('enviar.confirmacao');
+
+Route::get('tables', [PermanenciaController::class, 'index'])->middleware('auth')->name('tables');
+
+
+Route::get('/complete-profile', [AlunoPerfilController::class, 'show'])->middleware('auth');
+Route::post('/complete-profile', [AlunoPerfilController::class, 'store'])->middleware('auth');
 Route::get('/permanencias/confirmar/{id}/{token}', [PermanenciaController::class, 'confirmarPermanencia'])->name('permanencias.confirmar');
 Route::post('/enviar-confirmacao', [PermanenciaController::class, 'enviarConfirmacao'])->name('enviar.confirmacao');
 Route::get('/permanencias/search', [PermanenciaController::class, 'search'])->name('permanencias.search');
-Route::get('tables', [PermanenciaController::class, 'index'])->middleware('auth')->name('tables');
 Route::get('permanencias/create', [PermanenciaController::class, 'create'])->name('permanencias.create');
 Route::post('permanencias', [PermanenciaController::class, 'store'])->name('permanencias.store');
 Route::get('auth/google', [SessionsController::class, 'redirectToGoogle']);
@@ -78,3 +89,4 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('pages.laravel-examples.user-profile');
 	})->name('user-profile');
 });
+

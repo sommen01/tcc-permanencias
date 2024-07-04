@@ -47,13 +47,33 @@ class PermanenciaController extends Controller
         return $this->client;
     }
 
-    // CRUD de Permanências
 
-    public function index()
+    public function index(Request $request)
     {
-        $permanencias = Permanencia::all();
+        $query = Permanencia::query();
+    
+        if ($request->filled('curso')) {
+            $query->orderByRaw("curso = '{$request->curso}' DESC");
+        }
+    
+        if ($request->filled('disciplina')) {
+            $query->orderByRaw("disciplina = '{$request->disciplina}' DESC");
+        }
+    
+        if ($request->filled('turno')) {
+            $query->orderByRaw("turno = '{$request->turno}' DESC");
+        }
+    
+        if ($request->filled('nome_do_professor')) {
+            $query->orderByRaw("nome_do_professor LIKE '%{$request->nome_do_professor}%' DESC");
+        }
+    
+        $permanencias = $query->get();
+    
         return view('pages.tables', compact('permanencias'));
     }
+    
+    
 
     public function create()
     {
@@ -64,24 +84,62 @@ class PermanenciaController extends Controller
     {
         $request->validate([
             'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'disciplina' => 'required|string|max:255',
+            'email_do_professor' => 'required|email|max:255',
             'status' => 'required|boolean',
             'data' => 'required|date',
+            'curso' => 'required|string|max:255',
+            'turno' => 'required|string|max:255',
+            'nome_do_professor' => 'required|string|max:255',
         ]);
-
+    
         $path = $request->file('foto')->store('public/images');
-
+    
         Permanencia::create([
             'foto' => $path,
-            'nome' => $request->nome,
-            'email' => $request->email,
+            'disciplina' => $request->disciplina,
+            'email_do_professor' => $request->email_do_professor,
             'status' => $request->status,
             'data' => $request->data,
+            'curso' => $request->curso,
+            'turno' => $request->turno,
+            'nome_do_professor' => $request->nome_do_professor,
         ]);
-
+    
         return redirect()->route('tables')->with('success', 'Permanência criada com sucesso.');
     }
+    
+    public function update(Request $request, $id)
+    {
+        $permanencia = Permanencia::findOrFail($id);
+    
+        $request->validate([
+            'disciplina' => 'required|string|max:255',
+            'email_do_professor' => 'required|email|max:255',
+            'status' => 'required|boolean',
+            'data' => 'required|date',
+            'curso' => 'required|string|max:255',
+            'turno' => 'required|string|max:255',
+            'nome_do_professor' => 'required|string|max:255',
+        ]);
+    
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('public/images');
+            $permanencia->foto = $path;
+        }
+    
+        $permanencia->disciplina = $request->disciplina;
+        $permanencia->email_do_professor = $request->email_do_professor;
+        $permanencia->status = $request->status;
+        $permanencia->data = $request->data;
+        $permanencia->curso = $request->curso;
+        $permanencia->turno = $request->turno;
+        $permanencia->nome_do_professor = $request->nome_do_professor;
+        $permanencia->save();
+    
+        return redirect()->route('tables')->with('success', 'Permanência atualizada com sucesso.');
+    }
+    
 
     public function edit($id)
     {
@@ -89,31 +147,7 @@ class PermanenciaController extends Controller
         return view('permanencias.edit', compact('permanencia'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $permanencia = Permanencia::findOrFail($id);
-
-        $request->validate([
-            'nome' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'status' => 'required|boolean',
-            'data' => 'required|date',
-        ]);
-
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('public/images');
-            $permanencia->foto = $path;
-        }
-
-        $permanencia->nome = $request->nome;
-        $permanencia->email = $request->email;
-        $permanencia->status = $request->status;
-        $permanencia->data = $request->data;
-        $permanencia->save();
-
-        return redirect()->route('tables')->with('success', 'Permanência atualizada com sucesso.');
-    }
-
+  
     public function destroy($id)
     {
         $permanencia = Permanencia::findOrFail($id);

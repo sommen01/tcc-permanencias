@@ -22,9 +22,59 @@
                         </div>
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
+                                <!-- Formulário de Filtros -->
+                                <form action="{{ route('tables') }}" method="GET">
+                                    <div class="row px-3 py-3">
+                                        <div class="col-md-3">
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="curso" id="curso">
+                                                    <option value="">Curso</option>
+                                                    <option value="Informática">Informática</option>
+                                                    <option value="Mecânica">Mecânica</option>
+                                                    <option value="Eletrotécnica">Eletrotécnica</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="disciplina" id="disciplina">
+                                                    <option value="">Disciplina</option>
+                                                    <option value="Matemática">Matemática</option>
+                                                    <option value="Português">Português</option>
+                                                    <option value="História">História</option>
+                                                    <option value="Geografia">Geografia</option>
+                                                    <option value="Biologia">Biologia</option>
+                                                    <option value="Física">Física</option>
+                                                    <option value="Química">Química</option>
+                                                    <option value="Inglês">Inglês</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="turno" id="turno">
+                                                    <option value="">Turno</option>
+                                                    <option value="Matutino">Matutino</option>
+                                                    <option value="Vespertino">Vespertino</option>
+                                                    <option value="Noturno">Noturno</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-group input-group-outline">
+                                                <input type="text" class="form-control" name="nome_do_professor"
+                                                    id="nome_do_professor" placeholder="Nome do Professor">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mt-3">
+                                            <button type="submit" class="btn btn-primary">Buscar</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Tabela de Resultados -->
                                 <form action="{{ route('enviar.confirmacao') }}" method="POST">
                                     @csrf
-                                    <table class="table align-items-center mb-0">
+                                    <table class="table table-striped align-items-center mb-0">
                                         <thead>
                                             <tr>
                                                 <th
@@ -32,10 +82,19 @@
                                                     Foto</th>
                                                 <th
                                                     class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Nome</th>
+                                                    Disciplina</th>
                                                 <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Email</th>
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Curso</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Turno</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Nome do Professor</th>
+                                                <th
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Email do Professor</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Status</th>
@@ -58,20 +117,32 @@
                                                                     alt="user">
                                                             </div>
                                                             <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm">{{ $permanencia->nome }}</h6>
+                                                                <h6 class="mb-0 text-sm">
+                                                                    {{ $permanencia->nome_do_professor }}</h6>
                                                                 <p class="text-xs text-secondary mb-0">
-                                                                    {{ $permanencia->email }}</p>
+                                                                    {{ $permanencia->email_do_professor }}</p>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $permanencia->nome }}
-                                                        </p>
+                                                            {{ $permanencia->disciplina }}</p>
                                                     </td>
                                                     <td>
-                                                        <p class="text-xs text-secondary mb-0">{{ $permanencia->email }}
-                                                        </p>
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            {{ $permanencia->curso }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            {{ $permanencia->turno }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            {{ $permanencia->nome_do_professor }}</p>
+                                                    </td>
+                                                    <td>
+                                                        <p class="text-xs text-secondary mb-0">
+                                                            {{ $permanencia->email_do_professor }}</p>
                                                     </td>
                                                     <td class="align-middle text-center text-sm">
                                                         @if ($permanencia->status)

@@ -7,8 +7,9 @@
     },
     "devDependencies": {
         "axios": "^1.6.4",
-        "laravel-vite-plugin": "^1.0.0",
-        "vite": "^5.0.0"
+        "laravel-vite-plugin": "^1.0.4",
+        "sass": "^1.77.6",
+        "vite": "^5.3.3"
     },
     "dependencies": {
         "bootstrap-datetimepicker-npm": "^4.17.37-npm"

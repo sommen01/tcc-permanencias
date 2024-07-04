@@ -93,8 +93,7 @@
                         <div class="card z-index-0 fadeIn3 fadeInBottom card-color-custom">
                             <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                                 <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Cadastro de
-                                        Permanência
+                                    <h4 class="text-white font-weight-bolder text-center mt-2 mb-0">Editar Permanência
                                     </h4>
 
                                     @if (session('error'))
@@ -104,26 +103,45 @@
                                     @endif
                                 </div>
                                 <div class="card-body">
-                                    <form role="form" method="POST" action="{{ route('permanencias.store') }}"
+                                    <form role="form" method="POST"
+                                        action="{{ route('permanencias.update', $permanencia->id) }}"
                                         enctype="multipart/form-data" class="text-start">
                                         @csrf
+                                        @method('PUT')
                                         <div class="form-group">
                                             <label for="foto" class="form-label">Foto</label>
-                                            <input type="file" class="form-control" name="foto" id="foto"
-                                                required>
+                                            <input type="file" class="form-control" name="foto" id="foto">
+                                            <img src="{{ Storage::url($permanencia->foto) }}" alt="Foto"
+                                                width="100">
                                         </div>
                                         <div class="form-group">
                                             <label for="disciplina" class="form-label">Disciplina</label>
                                             <div class="input-group input-group-outline">
                                                 <select class="form-control" name="disciplina" id="disciplina" required>
-                                                    <option value="Matemática">Matemática</option>
-                                                    <option value="Português">Português</option>
-                                                    <option value="História">História</option>
-                                                    <option value="Geografia">Geografia</option>
-                                                    <option value="Biologia">Biologia</option>
-                                                    <option value="Física">Física</option>
-                                                    <option value="Química">Química</option>
-                                                    <option value="Inglês">Inglês</option>
+                                                    <option value="Matemática"
+                                                        {{ $permanencia->disciplina == 'Matemática' ? 'selected' : '' }}>
+                                                        Matemática</option>
+                                                    <option value="Português"
+                                                        {{ $permanencia->disciplina == 'Português' ? 'selected' : '' }}>
+                                                        Português</option>
+                                                    <option value="História"
+                                                        {{ $permanencia->disciplina == 'História' ? 'selected' : '' }}>
+                                                        História</option>
+                                                    <option value="Geografia"
+                                                        {{ $permanencia->disciplina == 'Geografia' ? 'selected' : '' }}>
+                                                        Geografia</option>
+                                                    <option value="Biologia"
+                                                        {{ $permanencia->disciplina == 'Biologia' ? 'selected' : '' }}>
+                                                        Biologia</option>
+                                                    <option value="Física"
+                                                        {{ $permanencia->disciplina == 'Física' ? 'selected' : '' }}>
+                                                        Física</option>
+                                                    <option value="Química"
+                                                        {{ $permanencia->disciplina == 'Química' ? 'selected' : '' }}>
+                                                        Química</option>
+                                                    <option value="Inglês"
+                                                        {{ $permanencia->disciplina == 'Inglês' ? 'selected' : '' }}>
+                                                        Inglês</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -131,9 +149,15 @@
                                             <label for="curso" class="form-label">Curso</label>
                                             <div class="input-group input-group-outline">
                                                 <select class="form-control" name="curso" id="curso" required>
-                                                    <option value="Informática">Informática</option>
-                                                    <option value="Mecânica">Mecânica</option>
-                                                    <option value="Eletrotécnica">Eletrotécnica</option>
+                                                    <option value="Informática"
+                                                        {{ $permanencia->curso == 'Informática' ? 'selected' : '' }}>
+                                                        Informática</option>
+                                                    <option value="Mecânica"
+                                                        {{ $permanencia->curso == 'Mecânica' ? 'selected' : '' }}>
+                                                        Mecânica</option>
+                                                    <option value="Eletrotécnica"
+                                                        {{ $permanencia->curso == 'Eletrotécnica' ? 'selected' : '' }}>
+                                                        Eletrotécnica</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -141,9 +165,15 @@
                                             <label for="turno" class="form-label">Turno</label>
                                             <div class="input-group input-group-outline">
                                                 <select class="form-control" name="turno" id="turno" required>
-                                                    <option value="Matutino">Matutino</option>
-                                                    <option value="Vespertino">Vespertino</option>
-                                                    <option value="Noturno">Noturno</option>
+                                                    <option value="Matutino"
+                                                        {{ $permanencia->turno == 'Matutino' ? 'selected' : '' }}>
+                                                        Matutino</option>
+                                                    <option value="Vespertino"
+                                                        {{ $permanencia->turno == 'Vespertino' ? 'selected' : '' }}>
+                                                        Vespertino</option>
+                                                    <option value="Noturno"
+                                                        {{ $permanencia->turno == 'Noturno' ? 'selected' : '' }}>
+                                                        Noturno</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -151,24 +181,28 @@
                                             <label for="email_do_professor" class="form-label">Email do
                                                 Professor</label>
                                             <input type="email" class="form-control" name="email_do_professor"
-                                                id="email_do_professor" required>
+                                                id="email_do_professor" value="{{ $permanencia->email_do_professor }}"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label for="nome_do_professor" class="form-label">Nome do Professor</label>
                                             <input type="text" class="form-control" name="nome_do_professor"
-                                                id="nome_do_professor" required>
+                                                id="nome_do_professor" value="{{ $permanencia->nome_do_professor }}"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label for="status" class="form-label">Status</label>
                                             <select class="form-control" name="status" id="status" required>
-                                                <option value="1">Ativo</option>
-                                                <option value="0">Inativo</option>
+                                                <option value="1" {{ $permanencia->status ? 'selected' : '' }}>
+                                                    Ativo</option>
+                                                <option value="0" {{ !$permanencia->status ? 'selected' : '' }}>
+                                                    Inativo</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="data" class="form-label">Data</label>
                                             <input type="date" class="form-control" name="data" id="data"
-                                                required>
+                                                value="{{ $permanencia->data }}" required>
                                         </div>
                                         <div class="text-center">
                                             <button type="submit"

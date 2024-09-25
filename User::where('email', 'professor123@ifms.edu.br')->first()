@@ -1,0 +1,19 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#6035
+    [34mid[39m: [35m2[39m,
+    [34mname[39m: "[32mProfessor[39m",
+    [34memail[39m: "[32mprofessor@ifms.edu.br[39m",
+    [34memail_verified_at[39m: "[32m2024-09-05 00:21:27[39m",
+    [34mphone[39m: [36mnull[39m,
+    [34mlocation[39m: [36mnull[39m,
+    [34mabout[39m: [36mnull[39m,
+    #[33mpassword[39m: "[32m$2y$12$WLEH1oE9y4D8zMj9CosrRuPUjZIiopm4zl5omU0oFvonU6dkHWsI6[39m",
+    #[33mremember_token[39m: "[32mabO7vDr4V9[39m",
+    [34mcreated_at[39m: "[32m2024-09-05 00:21:27[39m",
+    [34mupdated_at[39m: "[32m2024-09-25 22:45:21[39m",
+    [34mcurso[39m: [36mnull[39m,
+    [34mperiodo[39m: [36mnull[39m,
+    [34mturno[39m: [36mnull[39m,
+    [34mprofile_completed[39m: [36mfalse[39m,
+    [34mrole[39m: "[32mprofessor[39m",
+  }
+

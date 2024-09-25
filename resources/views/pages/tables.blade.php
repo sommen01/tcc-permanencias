@@ -161,14 +161,33 @@
                                                     </td>
                                                     <td class="align-middle text-center">
                                                         <input type="checkbox" name="permanencias[]"
-                                                            value="{{ $permanencia->id }}">
+                                                            value="{{ $permanencia->id }}" class="confirmar-checkbox">
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    <button type="submit" class="btn btn-primary mt-3">Enviar Email de
-                                        Confirmação</button>
+                                    <!-- Modal de confirmação -->
+                                    <div class="modal fade" id="confirmModal" tabindex="-1"
+                                        aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Fechar"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Ao confirmar, será enviado um email com a data da permanência.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -179,3 +198,28 @@
     </main>
     <x-plugins></x-plugins>
 </x-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.confirmar-checkbox');
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    modal.show();
+                }
+            });
+        });
+
+        document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function() {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        });
+
+        document.querySelector('#confirmModal .btn-primary').addEventListener('click', function() {
+            document.querySelector('form').submit();
+        });
+    });
+</script>

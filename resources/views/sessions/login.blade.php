@@ -60,7 +60,7 @@
 
                                     <div class="row mt-3 justify-content-center">
                                         <div class="row justify-content-center mb-4">
-                                            <a href="{{ url('auth/google') }}" class="btn btn-google google-btn">
+                                            <a href="{{ route('login.google') }}" class="btn btn-google google-btn">
                                                 <i class="fab fa-google google-icon"></i>
                                                 Logar com o Google
                                             </a>
@@ -87,7 +87,7 @@
                                         <div class="input-group input-group-outline mt-3">
                                             <label class="form-label">Email</label>
                                             <input type="email" class="form-control" name="email"
-                                                value="{{ 'luka.ferreira@estudante.ifms.edu.br' }}">
+                                                value="{{ 'professor123@ifms.edu.br' }}">
                                         </div>
                                         @error('email')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
@@ -95,7 +95,7 @@
                                         <div class="input-group input-group-outline mt-3">
                                             <label class="form-label">Senha</label>
                                             <input type="password" class="form-control" name="password"
-                                                value='{{ 'secret' }}'>
+                                                value='{{ 'senha123' }}'>
                                         </div>
                                         @error('password')
                                             <p class='text-danger inputerror'>{{ $message }} </p>
@@ -109,7 +109,7 @@
                                             <button type="submit"
                                                 class="btn bg-gradient-primary w-100 my-4 mb-2 btn-no-hover">Logar</button>
                                         </div>
-                                        <p class="mt-4 text-sm text-center">
+                                        {{-- <p class="mt-4 text-sm text-center">
                                             Não tem uma conta?
                                             <a href="{{ route('register') }}"
                                                 class="text-primary text-gradient font-weight-bold">Registrar</a>
@@ -118,7 +118,7 @@
                                             Esqueceu sua senha? Redefinir sua senha
                                             <a href="{{ route('verify') }}"
                                                 class="text-primary text-gradient font-weight-bold">aqui</a>
-                                        </p>
+                                        </p> --}}
                                     </form>
                                 </div>
                             </div>

@@ -36,6 +36,12 @@ Route::get('/home', function () {
     return redirect()->route('tables'); 
 })->middleware('auth');
 
+
+// Login com Google
+Route::get('auth/google', [SessionsController::class, 'redirectToGoogle'])->name('login.google');
+Route::get('auth/google/callback', [SessionsController::class, 'handleGoogleCallback']);
+
+
 Route::get('/complete-profile', [AlunoPerfilController::class, 'show'])->middleware('auth');
 Route::post('/complete-profile', [AlunoPerfilController::class, 'store'])->middleware('auth');
 Route::get('/permanencias/confirmar/{id}/{token}', [PermanenciaController::class, 'confirmarPermanencia'])->name('permanencias.confirmar');
@@ -43,14 +49,21 @@ Route::post('/enviar-confirmacao', [PermanenciaController::class, 'enviarConfirm
 Route::get('/permanencias/search', [PermanenciaController::class, 'search'])->name('permanencias.search');
 Route::get('permanencias/create', [PermanenciaController::class, 'create'])->name('permanencias.create');
 Route::post('permanencias', [PermanenciaController::class, 'store'])->name('permanencias.store');
-Route::get('auth/google', [SessionsController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [SessionsController::class, 'handleGoogleCallback']);
+
 Route::get('/', function () {return redirect('sign-in');})->middleware('guest');
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::get('sign-up', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('sign-up', [RegisterController::class, 'store'])->middleware('guest');
-Route::get('sign-in', [SessionsController::class, 'create'])->middleware('guest')->name('login');
-Route::post('sign-in', [SessionsController::class, 'store'])->middleware('guest');
+
+// Rota para exibir o formulário de login
+Route::get('/sign-in', [SessionsController::class, 'create'])->name('login');
+
+// Rota para processar o login
+Route::post('/sign-in', [SessionsController::class, 'store']);
+
+
+
+
 Route::post('verify', [SessionsController::class, 'show'])->middleware('guest');
 Route::post('reset-password', [SessionsController::class, 'update'])->middleware('guest')->name('password.update');
 Route::get('verify', function () {
@@ -61,6 +74,8 @@ Route::get('/reset-password/{token}', function ($token) {
 })->middleware('guest')->name('password.reset');
 
 Route::post('sign-out', [SessionsController::class, 'destroy'])->middleware('auth')->name('logout');
+
+
 Route::get('profile', [ProfileController::class, 'create'])->middleware('auth')->name('profile');
 Route::post('user-profile', [ProfileController::class, 'update'])->middleware('auth');
 Route::group(['middleware' => 'auth'], function () {

@@ -47,12 +47,43 @@ class PermanenciaController extends Controller
     }
 
     // CRUD de Permanências
-
     public function index()
     {
-        $permanencias = Permanencia::all();
-        return view('pages.tables', compact('permanencias'));
+        $permanencias = Permanencia::all(); // ou sua lógica de consulta atual
+        $eventos = [];
+    
+        foreach ($permanencias as $permanencia) {
+            $dataInicial = Carbon::parse($permanencia->data);
+            $diaDaSemana = $dataInicial->dayOfWeek;
+    
+            // Gerar eventos para os próximos 3 meses
+            $dataFinal = Carbon::now()->addMonths(12);
+    
+            while ($dataInicial <= $dataFinal) {
+                $eventos[] = [
+                    'title' => $permanencia->nome_do_professor,
+                    'start' => $dataInicial->format('Y-m-d'),
+                    'extendedProps' => [
+                        'disciplina' => $permanencia->disciplina,
+                        'curso' => $permanencia->curso,
+                        'turno' => $permanencia->turno,
+                        'nome_do_professor' => $permanencia->nome_do_professor,
+                        'email_do_professor' => $permanencia->email_do_professor,
+                        'status' => $permanencia->status,
+                    ],
+                ];
+    
+                $dataInicial->addWeek();
+            }
+        }
+    
+        return view('pages.tables', compact('permanencias', 'eventos'));
     }
+    // public function index()
+    // {
+    //     $permanencias = Permanencia::all();
+    //     return view('pages.tables', compact('permanencias'));
+    // }
 
     public function create()
     {

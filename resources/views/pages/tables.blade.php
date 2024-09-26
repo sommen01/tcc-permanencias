@@ -73,6 +73,7 @@
                                         </div>
                                     </div>
                                 </form>
+
                                 <!-- Tabela de Resultados -->
                                 <form action="{{ route('enviar.confirmacao') }}" method="POST">
                                     @csrf
@@ -167,23 +168,56 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    <!-- Modal de confirmação -->
-                                    <div class="modal fade" id="confirmModal" tabindex="-1"
-                                        aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                    <div id="calendar"></div>
+
+                                    <!-- Modal de detalhes da permanência -->
+                                    <div class="modal fade" id="permanenciaModal" tabindex="-1"
+                                        aria-labelledby="permanenciaModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                                                    <h5 class="modal-title" id="permanenciaModalLabel">Detalhes da
+                                                        Permanência</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Fechar"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Ao confirmar, será enviado um email com a data da permanência.
+                                                    <table class="table">
+                                                        <tr>
+                                                            <th>Disciplina</th>
+                                                            <td id="modalDisciplina"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Curso</th>
+                                                            <td id="modalCurso"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Turno</th>
+                                                            <td id="modalTurno"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Nome do Professor</th>
+                                                            <td id="modalNomeProfessor"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Email do Professor</th>
+                                                            <td id="modalEmailProfessor"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Status</th>
+                                                            <td id="modalStatus"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Data</th>
+                                                            <td id="modalData"></td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Cancelar</button>
-                                                    <button type="submit" class="btn btn-primary">Confirmar</button>
+                                                        data-bs-dismiss="modal">Fechar</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        id="confirmarPermanencia">Confirmar Permanência</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -197,29 +231,92 @@
         </div>
     </main>
     <x-plugins></x-plugins>
-</x-layout>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkboxes = document.querySelectorAll('.confirmar-checkbox');
-        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    <!-- Adicione essas linhas no cabeçalho do seu arquivo -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    modal.show();
-                }
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                events: @json($eventos),
+                eventClick: function(info) {
+                    var evento = info.event;
+                    var permanenciaModal = new bootstrap.Modal(document.getElementById(
+                        'permanenciaModal'));
+
+                    // Preencher os dados no modal
+                    document.getElementById('modalDisciplina').textContent = evento.extendedProps
+                        .disciplina;
+                    document.getElementById('modalCurso').textContent = evento.extendedProps.curso;
+                    document.getElementById('modalTurno').textContent = evento.extendedProps.turno;
+                    document.getElementById('modalNomeProfessor').textContent = evento.extendedProps
+                        .nome_do_professor;
+                    document.getElementById('modalEmailProfessor').textContent = evento.extendedProps
+                        .email_do_professor;
+                    document.getElementById('modalStatus').textContent = evento.extendedProps.status ?
+                        'Disponível' : 'Indisponível';
+                    document.getElementById('modalData').textContent = info.event.start
+                        .toLocaleDateString('pt-BR');
+
+                    document.getElementById('confirmarPermanencia').onclick = function() {
+                        fetch('{{ route('enviar.confirmacao') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    permanencia_id: evento.id
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert('Permanência confirmada com sucesso!');
+                                    permanenciaModal.hide();
+                                } else {
+                                    alert('Erro ao confirmar permanência.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro:', error);
+                                alert('Erro ao confirmar permanência.');
+                            });
+                    };
+
+                    permanenciaModal.show();
+                },
+                height: '600px'
             });
+            calendar.render();
         });
 
-        document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function() {
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.confirmar-checkbox');
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+
             checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        modal.show();
+                    }
+                });
+            });
+
+            document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function() {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            });
+
+            document.querySelector('#confirmModal .btn-primary').addEventListener('click', function() {
+                document.querySelector('form').submit();
             });
         });
-
-        document.querySelector('#confirmModal .btn-primary').addEventListener('click', function() {
-            document.querySelector('form').submit();
-        });
-    });
-</script>
+    </script>
+</x-layout>

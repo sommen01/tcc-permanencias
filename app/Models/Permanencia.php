@@ -11,6 +11,7 @@ class Permanencia extends Model
 
     protected $fillable = [
         'foto',
+        'professor_id',
         'disciplina',
         'email_do_professor',
         'status',
@@ -21,5 +22,12 @@ class Permanencia extends Model
         'dia_semana',
         'hora_inicio',
         'hora_fim',
+        'duracao',
+
     ];
+
+    public function professor()
+    {
+        return $this->belongsTo(User::class, 'professor_id');
+    }
 }

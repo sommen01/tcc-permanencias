@@ -26,6 +26,7 @@ use App\Http\Controllers\AlunoPerfilController;
 
 
 
+Route::post('/excluir-permanencia', [PermanenciaController::class, 'excluir'])->name('excluir_permanencia');
 
 Route::resource('permanencias', PermanenciaController::class);
 Route::post('enviar-confirmacao', [PermanenciaController::class, 'enviarConfirmacao'])->name('enviar.confirmacao');
@@ -107,4 +108,5 @@ Route::group(['middleware' => 'auth'], function () {
 		return view('pages.laravel-examples.user-profile');
 	})->name('user-profile');
 });
+
 

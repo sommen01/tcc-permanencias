@@ -105,13 +105,8 @@
                                 </div>
                                 <div class="card-body">
                                     <form role="form" method="POST" action="{{ route('permanencias.store') }}"
-                                        enctype="multipart/form-data" class="text-start">
+                                        class="text-start">
                                         @csrf
-                                        <div class="form-group">
-                                            <label for="foto" class="form-label">Foto</label>
-                                            <input type="file" class="form-control" name="foto" id="foto"
-                                                required>
-                                        </div>
                                         <div class="form-group">
                                             <label for="dia_semana" class="form-label">Dia da Semana</label>
                                             <div class="input-group input-group-outline">
@@ -172,22 +167,37 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label for="professor_id" class="form-label">Nome do Professor</label>
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="professor_id" id="professor_id"
+                                                    required>
+                                                    <option value="">Selecione um professor</option>
+                                                    @foreach ($professores as $professor)
+                                                        <option value="{{ $professor->id }}"
+                                                            data-email="{{ $professor->email }}">{{ $professor->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="email_do_professor" class="form-label">Email do
                                                 Professor</label>
                                             <input type="email" class="form-control" name="email_do_professor"
-                                                id="email_do_professor" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="nome_do_professor" class="form-label">Nome do
-                                                Professor</label>
-                                            <input type="text" class="form-control" name="nome_do_professor"
-                                                id="nome_do_professor" required>
+                                                id="email_do_professor" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="status" class="form-label">Status</label>
                                             <select class="form-control" name="status" id="status" required>
                                                 <option value="1">Ativo</option>
                                                 <option value="0">Inativo</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="duracao">Duração</label>
+                                            <select name="duracao" id="duracao" class="form-control" required>
+                                                <option value="unica">Única vez</option>
+                                                <option value="semestre">Semestre (6 meses)</option>
                                             </select>
                                         </div>
                                         <div class="text-center">
@@ -206,4 +216,16 @@
                 </div>
             </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const professorSelect = document.getElementById('professor_id');
+            const emailInput = document.getElementById('email_do_professor');
+
+            professorSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                emailInput.value = selectedOption.getAttribute('data-email') || '';
+            });
+        });
+    </script>
 </x-layout>

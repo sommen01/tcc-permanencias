@@ -25,78 +25,77 @@
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <!-- Formulário de Filtros -->
-                                <form action="{{ route('tables') }}" method="GET">
-                                    <div class="row px-3 py-3">
-                                        <div class="col-md-3">
-                                            <div class="input-group input-group-outline">
-                                                <select class="form-control" name="curso" id="curso">
-                                                    <option value="">Curso</option>
-                                                    <option value="Informática">Informática</option>
-                                                    <option value="Mecânica">Mecânica</option>
-                                                    <option value="Eletrotécnica">Eletrotécnica</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group input-group-outline">
-                                                <select class="form-control" name="disciplina" id="disciplina">
-                                                    <option value="">Disciplina</option>
-                                                    <option value="Matemática">Matemática</option>
-                                                    <option value="Português">Português</option>
-                                                    <option value="História">História</option>
-                                                    <option value="Geografia">Geografia</option>
-                                                    <option value="Biologia">Biologia</option>
-                                                    <option value="Física">Física</option>
-                                                    <option value="Química">Química</option>
-                                                    <option value="Inglês">Inglês</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group input-group-outline">
-                                                <select class="form-control" name="turno" id="turno">
-                                                    <option value="">Turno</option>
-                                                    <option value="Matutino">Matutino</option>
-                                                    <option value="Vespertino">Vespertino</option>
-                                                    <option value="Noturno">Noturno</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="input-group input-group-outline">
-                                                <input type="text" class="form-control" name="nome_do_professor"
-                                                    id="nome_do_professor" placeholder="Nome do Professor">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 mt-3">
-                                            <button type="submit" class="btn btn-primary">Buscar</button>
+                                <div class="row px-3 py-3">
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-outline">
+                                            <select class="form-control filter-select" name="curso" id="curso">
+                                                <option value="">Curso</option>
+                                                <option value="Informática">Informática</option>
+                                                <option value="Mecânica">Mecânica</option>
+                                                <option value="Eletrotécnica">Eletrotécnica</option>
+                                            </select>
                                         </div>
                                     </div>
-                                </form>
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-outline">
+                                            <select class="form-control filter-select" name="disciplina"
+                                                id="disciplina">
+                                                <option value="">Disciplina</option>
+                                                <option value="Matemática">Matemática</option>
+                                                <option value="Português">Português</option>
+                                                <option value="História">História</option>
+                                                <option value="Geografia">Geografia</option>
+                                                <option value="Biologia">Biologia</option>
+                                                <option value="Física">Física</option>
+                                                <option value="Química">Química</option>
+                                                <option value="Inglês">Inglês</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group input-group-outline">
+                                            <select class="form-control filter-select" name="turno" id="turno">
+                                                <option value="">Turno</option>
+                                                <option value="Matutino">Matutino</option>
+                                                <option value="Vespertino">Vespertino</option>
+                                                <option value="Noturno">Noturno</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-center">
+                                        <div class="input-group input-group-outline flex-grow-1 me-2">
+                                            <select class="form-control filter-select" name="nome_do_professor"
+                                                id="nome_do_professor">
+                                                <option value="">Nome do Professor</option>
+                                                @foreach ($professores as $professor)
+                                                    <option value="{{ $professor->name }}">{{ $professor->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </div>
 
                                 <!-- Tabela de Resultados -->
-                                <form action="{{ route('enviar.confirmacao') }}" method="POST">
-                                    @csrf
-                                    <table class="table table-striped align-items-center mb-0">
+                                <div class="table-responsive">
+                                    <table class="table align-items-center mb-0">
                                         <thead>
                                             <tr>
                                                 <th
                                                     class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Foto</th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Disciplina</th>
                                                 <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                     Curso</th>
                                                 <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Turno</th>
                                                 <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Nome do Professor</th>
                                                 <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Email do Professor</th>
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -104,125 +103,130 @@
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Data</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Confirmar</th>
+                                                @if (Auth::user()->hasRole('professor'))
+                                                    <th
+                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                        Ações</th>
+                                                @endif
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($permanencias as $permanencia)
-                                                <tr>
+                                                <tr class="permanencia-row">
                                                     <td>
                                                         <div class="d-flex px-2 py-1">
-                                                            <div>
-                                                                <img src="{{ Storage::url($permanencia->foto) }}"
-                                                                    class="avatar avatar-sm me-3 border-radius-lg"
-                                                                    alt="user">
-                                                            </div>
                                                             <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm">
-                                                                    {{ $permanencia->nome_do_professor }}</h6>
-                                                                <p class="text-xs text-secondary mb-0">
-                                                                    {{ $permanencia->email_do_professor }}</p>
+                                                                <h6 class="mb-0 text-sm">{{ $permanencia->disciplina }}
+                                                                </h6>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $permanencia->disciplina }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
                                                             {{ $permanencia->curso }}</p>
                                                     </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $permanencia->turno }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $permanencia->nome_do_professor }}</p>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs text-secondary mb-0">
-                                                            {{ $permanencia->email_do_professor }}</p>
-                                                    </td>
                                                     <td class="align-middle text-center text-sm">
-                                                        @if ($permanencia->status)
-                                                            <span
-                                                                class="badge badge-sm bg-gradient-success">Disponível</span>
-                                                        @else
-                                                            <span
-                                                                class="badge badge-sm bg-gradient-secondary">Indisponível</span>
-                                                        @endif
+                                                        <span
+                                                            class="badge badge-sm bg-gradient-success">{{ $permanencia->turno }}</span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->nome_do_professor }}</span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->email_do_professor }}</span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->status ? 'Disponível' : 'Indisponível' }}</span>
                                                     </td>
                                                     <td class="align-middle text-center">
                                                         <span
                                                             class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($permanencia->data)->format('d/m/Y') }}</span>
                                                     </td>
-                                                    <td class="align-middle text-center">
-                                                        <input type="checkbox" name="permanencias[]"
-                                                            value="{{ $permanencia->id }}" class="confirmar-checkbox">
-                                                    </td>
+                                                    @if (Auth::user()->hasRole('professor'))
+                                                        <td class="align-middle text-center">
+                                                            @if ($permanencia->professor_id == Auth::id())
+                                                                <button
+                                                                    class="btn btn-danger btn-sm excluir-permanencia"
+                                                                    data-id="{{ $permanencia->id }}">Excluir</button>
+                                                            @endif
+                                                        </td>
+                                                    @endif
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
-                                    <div id="calendar"></div>
+                                </div>
 
-                                    <!-- Modal de detalhes da permanência -->
-                                    <div class="modal fade" id="permanenciaModal" tabindex="-1"
-                                        aria-labelledby="permanenciaModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="permanenciaModalLabel">Detalhes da
-                                                        Permanência</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Fechar"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table class="table">
-                                                        <tr>
-                                                            <th>Disciplina</th>
-                                                            <td id="modalDisciplina"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Curso</th>
-                                                            <td id="modalCurso"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Turno</th>
-                                                            <td id="modalTurno"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Nome do Professor</th>
-                                                            <td id="modalNomeProfessor"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Email do Professor</th>
-                                                            <td id="modalEmailProfessor"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Status</th>
-                                                            <td id="modalStatus"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Data</th>
-                                                            <td id="modalData"></td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Fechar</button>
-                                                    <button type="button" class="btn btn-primary"
-                                                        id="confirmarPermanencia">Confirmar Permanência</button>
-                                                </div>
+                                @if (Auth::user()->hasRole('aluno'))
+                                    <!-- Subtítulo e Divisor para o Calendário -->
+                                    <div class="mt-5 mb-3">
+                                        <h4 class="text-center">Calendário</h4>
+                                        <hr class="horizontal dark mt-0">
+                                    </div>
+
+                                    <!-- Calendário -->
+                                    <div id="calendar"></div>
+                                @endif
+
+                                <!-- Modal de detalhes da permanência -->
+                                <div class="modal fade" id="permanenciaModal" tabindex="-1"
+                                    aria-labelledby="permanenciaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="permanenciaModalLabel">Detalhes da
+                                                    Permanência</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Fechar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table">
+                                                    <tr>
+                                                        <th>Disciplina</th>
+                                                        <td id="modalDisciplina"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Curso</th>
+                                                        <td id="modalCurso"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Turno</th>
+                                                        <td id="modalTurno"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Nome do Professor</th>
+                                                        <td id="modalNomeProfessor"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Email do Professor</th>
+                                                        <td id="modalEmailProfessor"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Status</th>
+                                                        <td id="modalStatus"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Data</th>
+                                                        <td id="modalData"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Duração</th>
+                                                        <td id="modalDuracao"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Fechar</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    id="confirmarPermanencia">Confirmar Permanência</button>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -236,86 +240,200 @@
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 
+    <!-- Adicione isso no cabeçalho do seu arquivo, se ainda não estiver incluído -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'pt-br',
-                events: @json($eventos),
-                eventClick: function(info) {
-                    var evento = info.event;
-                    var permanenciaModal = new bootstrap.Modal(document.getElementById(
-                        'permanenciaModal'));
+            if (calendarEl) {
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    locale: 'pt-BR',
+                    events: generateRecurringEvents(@json($permanencias)),
+                    eventClick: function(info) {
+                        var evento = info.event;
+                        var permanenciaModal = new bootstrap.Modal(document.getElementById(
+                            'permanenciaModal'));
 
-                    // Preencher os dados no modal
-                    document.getElementById('modalDisciplina').textContent = evento.extendedProps
-                        .disciplina;
-                    document.getElementById('modalCurso').textContent = evento.extendedProps.curso;
-                    document.getElementById('modalTurno').textContent = evento.extendedProps.turno;
-                    document.getElementById('modalNomeProfessor').textContent = evento.extendedProps
-                        .nome_do_professor;
-                    document.getElementById('modalEmailProfessor').textContent = evento.extendedProps
-                        .email_do_professor;
-                    document.getElementById('modalStatus').textContent = evento.extendedProps.status ?
-                        'Disponível' : 'Indisponível';
-                    document.getElementById('modalData').textContent = info.event.start
-                        .toLocaleDateString('pt-BR');
+                        document.getElementById('modalDisciplina').textContent = evento.extendedProps
+                            .disciplina;
+                        document.getElementById('modalCurso').textContent = evento.extendedProps.curso;
+                        document.getElementById('modalTurno').textContent = evento.extendedProps.turno;
+                        document.getElementById('modalNomeProfessor').textContent = evento.extendedProps
+                            .nome_do_professor;
+                        document.getElementById('modalEmailProfessor').textContent = evento
+                            .extendedProps
+                            .email_do_professor;
+                        document.getElementById('modalStatus').textContent = evento.extendedProps
+                            .status ?
+                            'Disponível' : 'Indisponível';
+                        document.getElementById('modalData').textContent = info.event.start
+                            .toLocaleDateString('pt-BR');
+                        document.getElementById('modalDuracao').textContent =
+                            info.event.extendedProps.duracao === 'semestre' ? 'Semestre (6 meses)' :
+                            'Única vez';
 
-                    document.getElementById('confirmarPermanencia').onclick = function() {
-                        fetch('{{ route('enviar.confirmacao') }}', {
+                        document.getElementById('confirmarPermanencia').onclick = function() {
+                            fetch('{{ route('enviar.confirmacao') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    body: JSON.stringify({
+                                        permanencia_id: evento.id
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert('Permanência confirmada com sucesso!');
+                                        permanenciaModal.hide();
+                                    } else {
+                                        alert('Erro ao confirmar permanência.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erro:', error);
+                                    alert('Erro ao confirmar permanência.');
+                                });
+                        };
+
+                        permanenciaModal.show();
+                    },
+                    height: '600px',
+                    buttonText: {
+                        today: 'Hoje'
+                    }
+                });
+                calendar.render();
+            }
+
+            function generateRecurringEvents(permanencias) {
+                var events = [];
+                var today = new Date();
+                var sixMonthsLater = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
+
+                permanencias.forEach(function(permanencia) {
+                    var startDate = new Date(permanencia.data);
+                    var endDate = permanencia.duracao === 'semestre' ? sixMonthsLater : new Date(startDate);
+
+                    while (startDate <= endDate) {
+                        events.push({
+                            id: permanencia.id,
+                            title: permanencia.disciplina + ' - ' + permanencia.nome_do_professor,
+                            start: new Date(startDate),
+                            extendedProps: {
+                                disciplina: permanencia.disciplina,
+                                curso: permanencia.curso,
+                                turno: permanencia.turno,
+                                nome_do_professor: permanencia.nome_do_professor,
+                                email_do_professor: permanencia.email_do_professor,
+                                status: permanencia.status,
+                                duracao: permanencia.duracao
+                            }
+                        });
+
+                        if (permanencia.duracao === 'unica') {
+                            break; // Se for única, não cria eventos recorrentes
+                        }
+
+                        // Avança para a próxima semana
+                        startDate.setDate(startDate.getDate() + 7);
+                    }
+                });
+
+                return events;
+            }
+
+            // Código para excluir permanência
+            document.querySelectorAll('.excluir-permanencia').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var permanenciaId = this.getAttribute('data-id');
+                    var button = this;
+
+                    if (confirm('Tem certeza que deseja excluir esta permanência?')) {
+                        fetch('{{ route('excluir_permanencia') }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                 },
                                 body: JSON.stringify({
-                                    permanencia_id: evento.id
+                                    permanencia_id: permanenciaId
                                 })
                             })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
-                                    alert('Permanência confirmada com sucesso!');
-                                    permanenciaModal.hide();
+                                    alert('Permanência excluída com sucesso!');
+                                    button.closest('tr').remove();
                                 } else {
-                                    alert('Erro ao confirmar permanência.');
+                                    alert('Erro ao excluir permanência: ' + data.message);
                                 }
                             })
                             .catch(error => {
                                 console.error('Erro:', error);
-                                alert('Erro ao confirmar permanência.');
+                                alert(
+                                    'Erro ao excluir permanência. Por favor, tente novamente.'
+                                );
                             });
-                    };
-
-                    permanenciaModal.show();
-                },
-                height: '600px'
-            });
-            calendar.render();
-        });
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = document.querySelectorAll('.confirmar-checkbox');
-            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (this.checked) {
-                        modal.show();
                     }
                 });
             });
 
-            document.getElementById('confirmModal').addEventListener('hidden.bs.modal', function() {
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-            });
+            // Nova lógica de filtragem usando jQuery
+            $(document).ready(function() {
+                var originalRows = $('.permanencia-row').get();
 
-            document.querySelector('#confirmModal .btn-primary').addEventListener('click', function() {
-                document.querySelector('form').submit();
+                $('.filter-select').on('change', function() {
+                    filterAndSortTable();
+                });
+
+                function filterAndSortTable() {
+                    var curso = $('#curso').val().toLowerCase();
+                    var disciplina = $('#disciplina').val().toLowerCase();
+                    var turno = $('#turno').val().toLowerCase();
+                    var nomeProfessor = $('#nome_do_professor').val().toLowerCase();
+
+                    var rows = $.extend(true, [], originalRows);
+
+                    rows.sort(function(a, b) {
+                        var rowA = $(a);
+                        var rowB = $(b);
+
+                        var matchA = matchesFilters(rowA, curso, disciplina, turno, nomeProfessor);
+                        var matchB = matchesFilters(rowB, curso, disciplina, turno, nomeProfessor);
+
+                        if (matchA > matchB) return -1;
+                        if (matchA < matchB) return 1;
+                        return 0;
+                    });
+
+                    var tbody = $('.table tbody');
+                    tbody.empty();
+
+                    $.each(rows, function(index, row) {
+                        tbody.append(row);
+                    });
+                }
+
+                function matchesFilters(row, curso, disciplina, turno, nomeProfessor) {
+                    var rowCurso = $(row).find('td:eq(1)').text().toLowerCase();
+                    var rowDisciplina = $(row).find('td:eq(0)').text().toLowerCase();
+                    var rowTurno = $(row).find('td:eq(2)').text().toLowerCase();
+                    var rowNomeProfessor = $(row).find('td:eq(3)').text().toLowerCase();
+
+                    var matchLevel = 0;
+
+                    if (curso !== '' && rowCurso.includes(curso)) matchLevel++;
+                    if (disciplina !== '' && rowDisciplina.includes(disciplina)) matchLevel++;
+                    if (turno !== '' && rowTurno.includes(turno)) matchLevel++;
+                    if (nomeProfessor !== '' && rowNomeProfessor.includes(nomeProfessor)) matchLevel++;
+
+                    return matchLevel;
+                }
             });
         });
     </script>

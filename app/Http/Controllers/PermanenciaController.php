@@ -101,15 +101,14 @@ class PermanenciaController extends Controller
             'email_do_professor' => 'required|email',
             'status' => 'required|boolean',
             'duracao' => 'required|in:unica,semestre',
+            'sala' => 'nullable|string|max:255',
+
         ]);
     
-        // Buscar o professor selecionado
         $professor = User::findOrFail($validatedData['professor_id']);
     
-        // Adicionar nome do professor aos dados validados
         $validatedData['nome_do_professor'] = $professor->name;
     
-        // Calcular a data da primeira ocorrência
         $diaSemana = $validatedData['dia_semana'];
         $dataInicio = Carbon::now();
         while ($dataInicio->dayOfWeek != $diaSemana) {
@@ -117,67 +116,37 @@ class PermanenciaController extends Controller
         }
         $validatedData['data'] = $dataInicio->format('Y-m-d');
     
-        // Criar a permanência (apenas um registro)
         $permanencia = Permanencia::create($validatedData);
     
         return redirect()->route('permanencias.index')->with('success', 'Permanência criada com sucesso!');
     }
-    public function edit($id)
+    public function edit(Permanencia $permanencia)
     {
-        $permanencia = Permanencia::findOrFail($id);
-        return view('permanencias.edit', compact('permanencia'));
+        $professores = User::where('role', 'professor')->get();
+        return view('permanencias.edit', compact('permanencia', 'professores'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Permanencia $permanencia)
     {
-        $permanencia = Permanencia::findOrFail($id);
+        if (Auth::id() !== $permanencia->professor_id) {
+            return redirect()->route('permanencias.index')->with('error', 'Você não tem permissão para editar esta permanência.');
+        }
 
-        $request->validate([
-            'nome_do_professor' => 'required|string|max:255',
-            'email_do_professor' => 'required|email|max:255',
-            'status' => 'required|boolean',
+        $validatedData = $request->validate([
+            'dia_semana' => 'required|integer|between:1,7',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fim' => 'required|date_format:H:i|after:hora_inicio',
             'disciplina' => 'required|string|max:255',
             'curso' => 'required|string|max:255',
             'turno' => 'required|string|max:255',
-            'dia_semana' => 'required|integer|min:1|max:7',
-            'hora_inicio' => 'required',
-            'hora_fim' => 'required',
+            'professor_id' => 'required|exists:users,id',
+            'email_do_professor' => 'required|email',
+            'status' => 'required|boolean',
+            'duracao' => 'required|in:unica,semestre',
+            'sala' => 'required|string|max:255',
         ]);
 
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('public/images');
-            $permanencia->foto = $path;
-        }
-
-        $diaSemana = $request->dia_semana;
-        $horaInicio = $request->hora_inicio;
-        $horaFim = $request->hora_fim;
-
-        $currentDate = Carbon::now();
-        $endDate = $currentDate->copy()->addMonths(6);
-        
-        $dates = [];
-        
-        while ($currentDate->lessThan($endDate)) {
-            if ($currentDate->dayOfWeekIso == $diaSemana) {
-                $startDateTime = Carbon::createFromFormat('Y-m-d H:i', $currentDate->format('Y-m-d') . ' ' . $horaInicio);
-                $endDateTime = Carbon::createFromFormat('Y-m-d H:i', $currentDate->format('Y-m-d') . ' ' . $horaFim);
-                
-                $dates[] = [
-                    'foto' => $path ?? $permanencia->foto,
-                    'nome_do_professor' => $request->nome_do_professor,
-                    'email_do_professor' => $request->email_do_professor,
-                    'status' => $request->status,
-                    'data' => $startDateTime->format('Y-m-d H:i:s'),
-                    'disciplina' => $request->disciplina,
-                    'curso' => $request->curso,
-                    'turno' => $request->turno,
-                ];
-            }
-            $currentDate->addDay();
-        }
-
-        Permanencia::where('id', $id)->update($dates);
+        $permanencia->update($validatedData);
 
         return redirect()->route('tables')->with('success', 'Permanência atualizada com sucesso.');
     }

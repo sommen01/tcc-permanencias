@@ -24,7 +24,8 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\PermanenciaController;
 use App\Http\Controllers\AlunoPerfilController;
 
-
+Route::get('/permanencias/{permanencia}/edit', [PermanenciaController::class, 'edit'])->name('permanencias.edit');
+Route::put('/permanencias/{permanencia}', [PermanenciaController::class, 'update'])->name('permanencias.update');
 
 Route::post('/excluir-permanencia', [PermanenciaController::class, 'excluir'])->name('excluir_permanencia');
 

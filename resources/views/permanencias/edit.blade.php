@@ -101,18 +101,60 @@
                                             {{ session('error') }}
                                         </div>
                                     @endif
+
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="card-body">
                                     <form role="form" method="POST"
                                         action="{{ route('permanencias.update', $permanencia->id) }}"
-                                        enctype="multipart/form-data" class="text-start">
+                                        class="text-start">
                                         @csrf
                                         @method('PUT')
                                         <div class="form-group">
-                                            <label for="foto" class="form-label">Foto</label>
-                                            <input type="file" class="form-control" name="foto" id="foto">
-                                            <img src="{{ Storage::url($permanencia->foto) }}" alt="Foto"
-                                                width="100">
+                                            <label for="dia_semana" class="form-label">Dia da Semana</label>
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="dia_semana" id="dia_semana" required>
+                                                    <option value="1"
+                                                        {{ $permanencia->dia_semana == 1 ? 'selected' : '' }}>
+                                                        Segunda-feira</option>
+                                                    <option value="2"
+                                                        {{ $permanencia->dia_semana == 2 ? 'selected' : '' }}>
+                                                        Terça-feira</option>
+                                                    <option value="3"
+                                                        {{ $permanencia->dia_semana == 3 ? 'selected' : '' }}>
+                                                        Quarta-feira</option>
+                                                    <option value="4"
+                                                        {{ $permanencia->dia_semana == 4 ? 'selected' : '' }}>
+                                                        Quinta-feira</option>
+                                                    <option value="5"
+                                                        {{ $permanencia->dia_semana == 5 ? 'selected' : '' }}>
+                                                        Sexta-feira</option>
+                                                    <option value="6"
+                                                        {{ $permanencia->dia_semana == 6 ? 'selected' : '' }}>Sábado
+                                                    </option>
+                                                    <option value="7"
+                                                        {{ $permanencia->dia_semana == 7 ? 'selected' : '' }}>Domingo
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hora_inicio" class="form-label">Hora de Início</label>
+                                            <input type="time" class="form-control" name="hora_inicio"
+                                                id="hora_inicio" value="{{ $permanencia->hora_inicio }}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="hora_fim" class="form-label">Hora de Término</label>
+                                            <input type="time" class="form-control" name="hora_fim" id="hora_fim"
+                                                value="{{ $permanencia->hora_fim }}" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="disciplina" class="form-label">Disciplina</label>
@@ -178,17 +220,27 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label for="professor_id" class="form-label">Nome do Professor</label>
+                                            <div class="input-group input-group-outline">
+                                                <select class="form-control" name="professor_id" id="professor_id"
+                                                    required>
+                                                    <option value="">Selecione um professor</option>
+                                                    @foreach ($professores as $professor)
+                                                        <option value="{{ $professor->id }}"
+                                                            data-email="{{ $professor->email }}"
+                                                            {{ $permanencia->professor_id == $professor->id ? 'selected' : '' }}>
+                                                            {{ $professor->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="email_do_professor" class="form-label">Email do
                                                 Professor</label>
                                             <input type="email" class="form-control" name="email_do_professor"
-                                                id="email_do_professor" value="{{ $permanencia->email_do_professor }}"
-                                                required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="nome_do_professor" class="form-label">Nome do Professor</label>
-                                            <input type="text" class="form-control" name="nome_do_professor"
-                                                id="nome_do_professor" value="{{ $permanencia->nome_do_professor }}"
-                                                required>
+                                                id="email_do_professor"
+                                                value="{{ $permanencia->email_do_professor }}" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="status" class="form-label">Status</label>
@@ -200,13 +252,28 @@
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="data" class="form-label">Data</label>
-                                            <input type="date" class="form-control" name="data" id="data"
-                                                value="{{ $permanencia->data }}" required>
+                                            <label for="duracao">Duração</label>
+                                            <select name="duracao" id="duracao" class="form-control" required>
+                                                <option value="unica"
+                                                    {{ $permanencia->duracao == 'unica' ? 'selected' : '' }}>Única vez
+                                                </option>
+                                                <option value="semestre"
+                                                    {{ $permanencia->duracao == 'semestre' ? 'selected' : '' }}>
+                                                    Semestre (6 meses)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sala" class="form-label">Sala</label>
+                                            <input type="text" class="form-control" name="sala" id="sala"
+                                                value="{{ $permanencia->sala }}">
                                         </div>
                                         <div class="text-center">
                                             <button type="submit"
                                                 class="btn bg-gradient-primary w-100 my-4 mb-2 btn-no-hover">Salvar</button>
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="javascript:history.back()"
+                                                class="btn bg-gradient-secondary w-100 my-2">Voltar</a>
                                         </div>
                                     </form>
                                 </div>
@@ -216,4 +283,21 @@
                 </div>
             </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const professorSelect = document.getElementById('professor_id');
+            const emailInput = document.getElementById('email_do_professor');
+
+            function updateEmailField() {
+                const selectedOption = professorSelect.options[professorSelect.selectedIndex];
+                emailInput.value = selectedOption.getAttribute('data-email') || '';
+            }
+
+            professorSelect.addEventListener('change', updateEmailField);
+
+            // Preencha o campo de email inicialmente
+            updateEmailField();
+        });
+    </script>
 </x-layout>

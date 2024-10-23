@@ -103,6 +103,12 @@
                                                 <th
                                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     Data</th>
+                                                <th
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Sala</th>
+                                                <th
+                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                    Horário</th>
                                                 @if (Auth::user()->hasRole('professor'))
                                                     <th
                                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -145,9 +151,22 @@
                                                         <span
                                                             class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($permanencia->data)->format('d/m/Y') }}</span>
                                                     </td>
+                                                    <td class="align-middle text-center">
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->sala }}</span>
+                                                    </td>
+                                                    <td class="align-middle text-center">
+                                                        <span class="text-secondary text-xs font-weight-bold">
+                                                            {{ \Carbon\Carbon::parse($permanencia->hora_inicio)->format('H:i') }}
+                                                            -
+                                                            {{ \Carbon\Carbon::parse($permanencia->hora_fim)->format('H:i') }}
+                                                        </span>
+                                                    </td>
                                                     @if (Auth::user()->hasRole('professor'))
                                                         <td class="align-middle text-center">
                                                             @if ($permanencia->professor_id == Auth::id())
+                                                                <a href="{{ route('permanencias.edit', $permanencia->id) }}"
+                                                                    class="btn btn-info btn-sm">Editar</a>
                                                                 <button
                                                                     class="btn btn-danger btn-sm excluir-permanencia"
                                                                     data-id="{{ $permanencia->id }}">Excluir</button>
@@ -183,40 +202,19 @@
                                                     aria-label="Fechar"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <table class="table">
-                                                    <tr>
-                                                        <th>Disciplina</th>
-                                                        <td id="modalDisciplina"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Curso</th>
-                                                        <td id="modalCurso"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Turno</th>
-                                                        <td id="modalTurno"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Nome do Professor</th>
-                                                        <td id="modalNomeProfessor"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Email do Professor</th>
-                                                        <td id="modalEmailProfessor"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Status</th>
-                                                        <td id="modalStatus"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Data</th>
-                                                        <td id="modalData"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Duração</th>
-                                                        <td id="modalDuracao"></td>
-                                                    </tr>
-                                                </table>
+                                                <p><strong>Disciplina:</strong> <span id="modalDisciplina"></span></p>
+                                                <p><strong>Curso:</strong> <span id="modalCurso"></span></p>
+                                                <p><strong>Turno:</strong> <span id="modalTurno"></span></p>
+                                                <p><strong>Professor:</strong> <span id="modalProfessor"></span></p>
+                                                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                                                <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                                                <p><strong>Duração:</strong> <span id="modalDuracao"></span></p>
+                                                <p><strong>Sala:</strong> <span id="modalSala"></span></p>
+                                                <p><strong>Horário Inicial:</strong> <span
+                                                        id="modalHorarioInicial"></span>
+                                                </p>
+                                                <p><strong>Horário Final:</strong> <span id="modalHorarioFinal"></span>
+                                                </p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -253,54 +251,26 @@
                     events: generateRecurringEvents(@json($permanencias)),
                     eventClick: function(info) {
                         var evento = info.event;
-                        var permanenciaModal = new bootstrap.Modal(document.getElementById(
-                            'permanenciaModal'));
-
                         document.getElementById('modalDisciplina').textContent = evento.extendedProps
                             .disciplina;
                         document.getElementById('modalCurso').textContent = evento.extendedProps.curso;
                         document.getElementById('modalTurno').textContent = evento.extendedProps.turno;
-                        document.getElementById('modalNomeProfessor').textContent = evento.extendedProps
+                        document.getElementById('modalProfessor').textContent = evento.extendedProps
                             .nome_do_professor;
-                        document.getElementById('modalEmailProfessor').textContent = evento
-                            .extendedProps
+                        document.getElementById('modalEmail').textContent = evento.extendedProps
                             .email_do_professor;
                         document.getElementById('modalStatus').textContent = evento.extendedProps
-                            .status ?
-                            'Disponível' : 'Indisponível';
-                        document.getElementById('modalData').textContent = info.event.start
-                            .toLocaleDateString('pt-BR');
-                        document.getElementById('modalDuracao').textContent =
-                            info.event.extendedProps.duracao === 'semestre' ? 'Semestre (6 meses)' :
-                            'Única vez';
+                            .status === '1' ? 'Ativo' : 'Inativo';
+                        document.getElementById('modalDuracao').textContent = evento.extendedProps
+                            .duracao;
+                        document.getElementById('modalSala').textContent = evento.extendedProps.sala ||
+                            'Não especificada';
+                        document.getElementById('modalHorarioInicial').textContent = evento
+                            .extendedProps.hora_inicio || 'Não especificado';
+                        document.getElementById('modalHorarioFinal').textContent = evento.extendedProps
+                            .hora_fim || 'Não especificado';
 
-                        document.getElementById('confirmarPermanencia').onclick = function() {
-                            fetch('{{ route('enviar.confirmacao') }}', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    },
-                                    body: JSON.stringify({
-                                        permanencia_id: evento.id
-                                    })
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        alert('Permanência confirmada com sucesso!');
-                                        permanenciaModal.hide();
-                                    } else {
-                                        alert('Erro ao confirmar permanência.');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Erro:', error);
-                                    alert('Erro ao confirmar permanência.');
-                                });
-                        };
-
-                        permanenciaModal.show();
+                        $('#permanenciaModal').modal('show');
                     },
                     height: '600px',
                     buttonText: {
@@ -331,7 +301,10 @@
                                 nome_do_professor: permanencia.nome_do_professor,
                                 email_do_professor: permanencia.email_do_professor,
                                 status: permanencia.status,
-                                duracao: permanencia.duracao
+                                duracao: permanencia.duracao,
+                                sala: permanencia.sala,
+                                hora_inicio: permanencia.hora_inicio,
+                                hora_fim: permanencia.hora_fim
                             }
                         });
 
@@ -396,6 +369,7 @@
                     var disciplina = $('#disciplina').val().toLowerCase();
                     var turno = $('#turno').val().toLowerCase();
                     var nomeProfessor = $('#nome_do_professor').val().toLowerCase();
+                    var sala = $('#sala').val().toLowerCase(); // Novo filtro para sala
 
                     var rows = $.extend(true, [], originalRows);
 
@@ -403,8 +377,10 @@
                         var rowA = $(a);
                         var rowB = $(b);
 
-                        var matchA = matchesFilters(rowA, curso, disciplina, turno, nomeProfessor);
-                        var matchB = matchesFilters(rowB, curso, disciplina, turno, nomeProfessor);
+                        var matchA = matchesFilters(rowA, curso, disciplina, turno, nomeProfessor,
+                            sala);
+                        var matchB = matchesFilters(rowB, curso, disciplina, turno, nomeProfessor,
+                            sala);
 
                         if (matchA > matchB) return -1;
                         if (matchA < matchB) return 1;
@@ -419,11 +395,13 @@
                     });
                 }
 
-                function matchesFilters(row, curso, disciplina, turno, nomeProfessor) {
+                function matchesFilters(row, curso, disciplina, turno, nomeProfessor, sala) {
                     var rowCurso = $(row).find('td:eq(1)').text().toLowerCase();
                     var rowDisciplina = $(row).find('td:eq(0)').text().toLowerCase();
                     var rowTurno = $(row).find('td:eq(2)').text().toLowerCase();
                     var rowNomeProfessor = $(row).find('td:eq(3)').text().toLowerCase();
+                    var rowSala = $(row).find('td:eq(7)').text()
+                        .toLowerCase(); // Ajuste o índice conforme necessário
 
                     var matchLevel = 0;
 
@@ -431,6 +409,7 @@
                     if (disciplina !== '' && rowDisciplina.includes(disciplina)) matchLevel++;
                     if (turno !== '' && rowTurno.includes(turno)) matchLevel++;
                     if (nomeProfessor !== '' && rowNomeProfessor.includes(nomeProfessor)) matchLevel++;
+                    if (sala !== '' && rowSala.includes(sala)) matchLevel++;
 
                     return matchLevel;
                 }

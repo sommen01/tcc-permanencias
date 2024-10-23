@@ -200,6 +200,11 @@
                                                 <option value="semestre">Semestre (6 meses)</option>
                                             </select>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="sala" class="form-label">Sala</label>
+                                            <input type="text" class="form-control" name="sala" id="sala"
+                                                value="{{ old('sala') }}">
+                                        </div>
                                         <div class="text-center">
                                             <button type="submit"
                                                 class="btn bg-gradient-primary w-100 my-4 mb-2 btn-no-hover">Salvar</button>

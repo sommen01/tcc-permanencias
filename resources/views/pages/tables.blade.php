@@ -78,117 +78,124 @@
                                 </div>
 
                                 <!-- Tabela de Resultados -->
-                                <div class="table-responsive">
-                                    <table class="table align-items-center mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Disciplina</th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Curso</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Turno</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Nome do Professor</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Email do Professor</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Status</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Data</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Sala</th>
-                                                <th
-                                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    Horário</th>
-                                                @if (Auth::user()->hasRole('professor'))
-                                                    <th
-                                                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                        Ações</th>
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($permanencias as $permanencia)
-                                                <tr class="permanencia-row">
-                                                    <td>
-                                                        <div class="d-flex px-2 py-1">
-                                                            <div class="d-flex flex-column justify-content-center">
-                                                                <h6 class="mb-0 text-sm">{{ $permanencia->disciplina }}
-                                                                </h6>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            {{ $permanencia->curso }}</p>
-                                                    </td>
-                                                    <td class="align-middle text-center text-sm">
-                                                        <span
-                                                            class="badge badge-sm bg-gradient-success">{{ $permanencia->turno }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->nome_do_professor }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->email_do_professor }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->status ? 'Disponível' : 'Indisponível' }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($permanencia->data)->format('d/m/Y') }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">{{ $permanencia->sala }}</span>
-                                                    </td>
-                                                    <td class="align-middle text-center">
-                                                        <span class="text-secondary text-xs font-weight-bold">
-                                                            {{ \Carbon\Carbon::parse($permanencia->hora_inicio)->format('H:i') }}
-                                                            -
-                                                            {{ \Carbon\Carbon::parse($permanencia->hora_fim)->format('H:i') }}
-                                                        </span>
-                                                    </td>
-                                                    @if (Auth::user()->hasRole('professor'))
-                                                        <td class="align-middle text-center">
-                                                            @if ($permanencia->professor_id == Auth::id())
-                                                                <a href="{{ route('permanencias.edit', $permanencia->id) }}"
-                                                                    class="btn btn-info btn-sm">Editar</a>
-                                                                <button
-                                                                    class="btn btn-danger btn-sm excluir-permanencia"
-                                                                    data-id="{{ $permanencia->id }}">Excluir</button>
+                                <div class="row">
+                                    <!-- Coluna da Tabela -->
+                                    <div class="col-md-7">
+                                        <div class="table-responsive">
+                                            <table class="table align-items-center mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th
+                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Disciplina</th>
+                                                        <th
+                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                            Curso</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Turno</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Nome do Professor</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Email do Professor</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Status</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Data</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Sala</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Horário</th>
+                                                        @if (Auth::user()->hasRole('professor'))
+                                                            <th
+                                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                Ações</th>
+                                                        @endif
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($permanencias as $permanencia)
+                                                        <tr class="permanencia-row">
+                                                            <td>
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <div
+                                                                        class="d-flex flex-column justify-content-center">
+                                                                        <h6 class="mb-0 text-sm">
+                                                                            {{ $permanencia->disciplina }}
+                                                                        </h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <p class="text-xs font-weight-bold mb-0">
+                                                                    {{ $permanencia->curso }}</p>
+                                                            </td>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <span
+                                                                    class="badge badge-sm bg-gradient-success">{{ $permanencia->turno }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span
+                                                                    class="text-secondary text-xs font-weight-bold">{{ $permanencia->nome_do_professor }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span
+                                                                    class="text-secondary text-xs font-weight-bold">{{ $permanencia->email_do_professor }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span
+                                                                    class="text-secondary text-xs font-weight-bold">{{ $permanencia->status ? 'Disponível' : 'Indisponível' }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span
+                                                                    class="text-secondary text-xs font-weight-bold">{{ \Carbon\Carbon::parse($permanencia->data)->format('d/m/Y') }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span
+                                                                    class="text-secondary text-xs font-weight-bold">{{ $permanencia->sala }}</span>
+                                                            </td>
+                                                            <td class="align-middle text-center">
+                                                                <span class="text-secondary text-xs font-weight-bold">
+                                                                    {{ \Carbon\Carbon::parse($permanencia->hora_inicio)->format('H:i') }}
+                                                                    -
+                                                                    {{ \Carbon\Carbon::parse($permanencia->hora_fim)->format('H:i') }}
+                                                                </span>
+                                                            </td>
+                                                            @if (Auth::user()->hasRole('professor'))
+                                                                <td class="align-middle text-center">
+                                                                    @if ($permanencia->professor_id == Auth::id())
+                                                                        <a href="{{ route('permanencias.edit', $permanencia->id) }}"
+                                                                            class="btn btn-info btn-sm">Editar</a>
+                                                                        <button
+                                                                            class="btn btn-danger btn-sm excluir-permanencia"
+                                                                            data-id="{{ $permanencia->id }}">Excluir</button>
+                                                                    @endif
+                                                                </td>
                                                             @endif
-                                                        </td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                @if (Auth::user()->hasRole('aluno'))
-                                    <!-- Subtítulo e Divisor para o Calendário -->
-                                    <div class="mt-5 mb-3">
-                                        <h4 class="text-center">Calendário</h4>
-                                        <hr class="horizontal dark mt-0">
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
 
-                                    <!-- Calendário -->
-                                    <div id="calendar"></div>
-                                @endif
+                                    @if (Auth::user()->hasRole('aluno'))
+                                        <div class="col-md-5">
+                                            <div class="card">
+
+                                                <div class="card-body">
+                                                    <div id="calendar"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
 
                                 <!-- Modal de detalhes da permanência -->
                                 <div class="modal fade" id="permanenciaModal" tabindex="-1"
@@ -234,11 +241,9 @@
     </main>
     <x-plugins></x-plugins>
 
-    <!-- Adicione essas linhas no cabeçalho do seu arquivo -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js'></script>
 
-    <!-- Adicione isso no cabeçalho do seu arquivo, se ainda não estiver incluído -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
@@ -272,7 +277,7 @@
 
                         $('#permanenciaModal').modal('show');
                     },
-                    height: '600px',
+                    height: '800px',
                     buttonText: {
                         today: 'Hoje'
                     }
@@ -309,10 +314,9 @@
                         });
 
                         if (permanencia.duracao === 'unica') {
-                            break; // Se for única, não cria eventos recorrentes
+                            break;
                         }
 
-                        // Avança para a próxima semana
                         startDate.setDate(startDate.getDate() + 7);
                     }
                 });
@@ -320,7 +324,6 @@
                 return events;
             }
 
-            // Código para excluir permanência
             document.querySelectorAll('.excluir-permanencia').forEach(function(button) {
                 button.addEventListener('click', function() {
                     var permanenciaId = this.getAttribute('data-id');
@@ -356,62 +359,56 @@
                 });
             });
 
-            // Nova lógica de filtragem usando jQuery
             $(document).ready(function() {
+                var $table = $('.table');
+                var $tbody = $table.find('tbody');
                 var originalRows = $('.permanencia-row').get();
 
                 $('.filter-select').on('change', function() {
-                    filterAndSortTable();
+                    filterTable();
                 });
 
-                function filterAndSortTable() {
+                function filterTable() {
                     var curso = $('#curso').val().toLowerCase();
                     var disciplina = $('#disciplina').val().toLowerCase();
                     var turno = $('#turno').val().toLowerCase();
                     var nomeProfessor = $('#nome_do_professor').val().toLowerCase();
-                    var sala = $('#sala').val().toLowerCase(); // Novo filtro para sala
 
-                    var rows = $.extend(true, [], originalRows);
+                    // Clonar as linhas originais
+                    var rows = originalRows.slice();
 
+                    // Ordenar as linhas
                     rows.sort(function(a, b) {
                         var rowA = $(a);
                         var rowB = $(b);
 
-                        var matchA = matchesFilters(rowA, curso, disciplina, turno, nomeProfessor,
-                            sala);
-                        var matchB = matchesFilters(rowB, curso, disciplina, turno, nomeProfessor,
-                            sala);
+                        // Pontuação para cada linha
+                        var scoreA = calculateScore(rowA, curso, disciplina, turno, nomeProfessor);
+                        var scoreB = calculateScore(rowB, curso, disciplina, turno, nomeProfessor);
 
-                        if (matchA > matchB) return -1;
-                        if (matchA < matchB) return 1;
-                        return 0;
+                        return scoreB - scoreA; // Ordem decrescente
                     });
 
-                    var tbody = $('.table tbody');
-                    tbody.empty();
-
-                    $.each(rows, function(index, row) {
-                        tbody.append(row);
+                    // Reposicionar as linhas na tabela
+                    $tbody.empty();
+                    $(rows).each(function(index, row) {
+                        $tbody.append(row);
                     });
                 }
 
-                function matchesFilters(row, curso, disciplina, turno, nomeProfessor, sala) {
-                    var rowCurso = $(row).find('td:eq(1)').text().toLowerCase();
-                    var rowDisciplina = $(row).find('td:eq(0)').text().toLowerCase();
-                    var rowTurno = $(row).find('td:eq(2)').text().toLowerCase();
-                    var rowNomeProfessor = $(row).find('td:eq(3)').text().toLowerCase();
-                    var rowSala = $(row).find('td:eq(7)').text()
-                        .toLowerCase(); // Ajuste o índice conforme necessário
+                function calculateScore(row, curso, disciplina, turno, nomeProfessor) {
+                    var score = 0;
+                    var rowCurso = row.find('td:eq(1)').text().trim().toLowerCase();
+                    var rowDisciplina = row.find('td:eq(0)').text().trim().toLowerCase();
+                    var rowTurno = row.find('td:eq(2)').text().trim().toLowerCase();
+                    var rowProfessor = row.find('td:eq(3)').text().trim().toLowerCase();
 
-                    var matchLevel = 0;
+                    if (curso && rowCurso.includes(curso)) score += 1;
+                    if (disciplina && rowDisciplina.includes(disciplina)) score += 1;
+                    if (turno && rowTurno.includes(turno)) score += 1;
+                    if (nomeProfessor && rowProfessor.includes(nomeProfessor)) score += 1;
 
-                    if (curso !== '' && rowCurso.includes(curso)) matchLevel++;
-                    if (disciplina !== '' && rowDisciplina.includes(disciplina)) matchLevel++;
-                    if (turno !== '' && rowTurno.includes(turno)) matchLevel++;
-                    if (nomeProfessor !== '' && rowNomeProfessor.includes(nomeProfessor)) matchLevel++;
-                    if (sala !== '' && rowSala.includes(sala)) matchLevel++;
-
-                    return matchLevel;
+                    return score;
                 }
             });
         });

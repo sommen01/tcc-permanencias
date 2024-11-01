@@ -25,63 +25,73 @@
                         <div class="card-body px-0 pb-2">
                             <div class="table-responsive p-0">
                                 <!-- Formulário de Filtros -->
-                                <div class="row px-3 py-3">
-                                    <div class="col-md-3">
-                                        <div class="input-group input-group-outline">
-                                            <select class="form-control filter-select" name="curso" id="curso">
-                                                <option value="">Curso</option>
-                                                <option value="Informática">Informática</option>
-                                                <option value="Mecânica">Mecânica</option>
-                                                <option value="Eletrotécnica">Eletrotécnica</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group input-group-outline">
-                                            <select class="form-control filter-select" name="disciplina"
-                                                id="disciplina">
-                                                <option value="">Disciplina</option>
-                                                <option value="Matemática">Matemática</option>
-                                                <option value="Português">Português</option>
-                                                <option value="História">História</option>
-                                                <option value="Geografia">Geografia</option>
-                                                <option value="Biologia">Biologia</option>
-                                                <option value="Física">Física</option>
-                                                <option value="Química">Química</option>
-                                                <option value="Inglês">Inglês</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="input-group input-group-outline">
-                                            <select class="form-control filter-select" name="turno" id="turno">
-                                                <option value="">Turno</option>
-                                                <option value="Matutino">Matutino</option>
-                                                <option value="Vespertino">Vespertino</option>
-                                                <option value="Noturno">Noturno</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-center">
-                                        <div class="input-group input-group-outline flex-grow-1 me-2">
-                                            <select class="form-control filter-select" name="nome_do_professor"
-                                                id="nome_do_professor">
-                                                <option value="">Nome do Professor</option>
-                                                @foreach ($professores as $professor)
-                                                    <option value="{{ $professor->name }}">{{ $professor->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                <h6 class=" text-capitalize ps-4">Filtros</h6>
 
+                                <div class="row mb-4 ps-4">
+                                    <!-- Primeira linha -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-outline" style="width: 50%">
+                                                <select class="form-control filter-select" name="curso"
+                                                    id="curso">
+                                                    <option value="">Curso</option>
+                                                    <option value="Informática">Informática</option>
+                                                    <option value="Mecânica">Mecânica</option>
+                                                    <option value="Eletrotécnica">Eletrotécnica</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-left: -610px">
+                                            <div class="input-group input-group-outline" style="width: 50%">
+                                                <select class="form-control filter-select" name="disciplina"
+                                                    id="disciplina">
+                                                    <option value="">Disciplina</option>
+                                                    <option value="Matemática">Matemática</option>
+                                                    <option value="Português">Português</option>
+                                                    <option value="História">História</option>
+                                                    <option value="Geografia">Geografia</option>
+                                                    <option value="Biologia">Biologia</option>
+                                                    <option value="Física">Física</option>
+                                                    <option value="Química">Química</option>
+                                                    <option value="Inglês">Inglês</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Segunda linha -->
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group input-group-outline" style="width: 50%">
+                                                <select class="form-control filter-select" name="turno"
+                                                    id="turno">
+                                                    <option value="">Turno</option>
+                                                    <option value="Matutino">Matutino</option>
+                                                    <option value="Vespertino">Vespertino</option>
+                                                    <option value="Noturno">Noturno</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" style="margin-left: -610px">
+                                            <div class="input-group input-group-outline" style="width: 50%">
+                                                <select class="form-control filter-select" name="nome_do_professor"
+                                                    id="nome_do_professor">
+                                                    <option value="">Nome do Professor</option>
+                                                    @foreach ($professores as $professor)
+                                                        <option value="{{ $professor->name }}">{{ $professor->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Tabela de Resultados -->
+                                <!-- Conteúdo Principal (Tabela + Calendário) -->
                                 <div class="row">
                                     <!-- Coluna da Tabela -->
-                                    <div class="col-md-7">
-                                        <div class="table-responsive">
+                                    <div class="col-md-6 ps-4">
+                                        <div class="table-responsive" style="font-size: 0.9em;">
                                             <table class="table align-items-center mb-0">
                                                 <thead>
                                                     <tr>
@@ -185,9 +195,10 @@
                                         </div>
                                     </div>
 
+                                    <!-- Coluna do Calendário -->
                                     @if (Auth::user()->hasRole('aluno'))
-                                        <div class="col-md-5">
-                                            <div class="card">
+                                        <div class="col-md-6">
+                                            <div class="card" style="margin-top: -150px;">
 
                                                 <div class="card-body">
                                                     <div id="calendar"></div>

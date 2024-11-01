@@ -16,82 +16,97 @@
                             <div
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3">Permanências</h6>
-                                @if (auth()->user()->role === 'professor')
-                                    <a href="{{ route('permanencias.create') }}"
-                                        class="btn btn-light text-primary me-3">Cadastrar Permanência</a>
-                                @endif
+                                <button type="button" class="btn btn-success me-3 btn-outline-white"
+                                    data-bs-toggle="modal" data-bs-target="#filterModal"
+                                    style="border: 2px solid white;">
+                                    <i class="material-icons">filter_list</i> Filtrar
+                                </button>
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">
-                            <div class="table-responsive p-0">
-                                <!-- Formulário de Filtros -->
-                                <h6 class=" text-capitalize ps-4">Filtros</h6>
 
-                                <div class="row mb-4 ps-4">
-                                    <!-- Primeira linha -->
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <div class="input-group input-group-outline" style="width: 50%">
-                                                <select class="form-control filter-select" name="curso"
-                                                    id="curso">
-                                                    <option value="">Curso</option>
-                                                    <option value="Informática">Informática</option>
-                                                    <option value="Mecânica">Mecânica</option>
-                                                    <option value="Eletrotécnica">Eletrotécnica</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6" style="margin-left: -610px">
-                                            <div class="input-group input-group-outline" style="width: 50%">
-                                                <select class="form-control filter-select" name="disciplina"
-                                                    id="disciplina">
-                                                    <option value="">Disciplina</option>
-                                                    <option value="Matemática">Matemática</option>
-                                                    <option value="Português">Português</option>
-                                                    <option value="História">História</option>
-                                                    <option value="Geografia">Geografia</option>
-                                                    <option value="Biologia">Biologia</option>
-                                                    <option value="Física">Física</option>
-                                                    <option value="Química">Química</option>
-                                                    <option value="Inglês">Inglês</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- Segunda linha -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="input-group input-group-outline" style="width: 50%">
-                                                <select class="form-control filter-select" name="turno"
-                                                    id="turno">
-                                                    <option value="">Turno</option>
-                                                    <option value="Matutino">Matutino</option>
-                                                    <option value="Vespertino">Vespertino</option>
-                                                    <option value="Noturno">Noturno</option>
-                                                </select>
+                            <!-- Modal de Filtros -->
+                            <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success">
+                                            <h5 class="modal-title text-white" id="filterModalLabel">Filtros</h5>
+                                            <button type="button" class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Filtros -->
+                                            <div class="row mb-3">
+                                                <div class="col-12 mb-3">
+                                                    <div class="input-group input-group-outline">
+                                                        <select class="form-control filter-select" name="curso"
+                                                            id="curso">
+                                                            <option value="">Curso</option>
+                                                            <option value="Informática">Informática</option>
+                                                            <option value="Mecânica">Mecânica</option>
+                                                            <option value="Eletrotécnica">Eletrotécnica</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-3">
+                                                    <div class="input-group input-group-outline">
+                                                        <select class="form-control filter-select" name="disciplina"
+                                                            id="disciplina">
+                                                            <option value="">Disciplina</option>
+                                                            <option value="Matemática">Matemática</option>
+                                                            <option value="Português">Português</option>
+                                                            <option value="História">História</option>
+                                                            <option value="Geografia">Geografia</option>
+                                                            <option value="Biologia">Biologia</option>
+                                                            <option value="Física">Física</option>
+                                                            <option value="Química">Química</option>
+                                                            <option value="Inglês">Inglês</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 mb-3">
+                                                    <div class="input-group input-group-outline">
+                                                        <select class="form-control filter-select" name="turno"
+                                                            id="turno">
+                                                            <option value="">Turno</option>
+                                                            <option value="Matutino">Matutino</option>
+                                                            <option value="Vespertino">Vespertino</option>
+                                                            <option value="Noturno">Noturno</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group input-group-outline">
+                                                        <select class="form-control filter-select"
+                                                            name="nome_do_professor" id="nome_do_professor">
+                                                            <option value="">Nome do Professor</option>
+                                                            @foreach ($professores as $professor)
+                                                                <option value="{{ $professor->name }}">
+                                                                    {{ $professor->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6" style="margin-left: -610px">
-                                            <div class="input-group input-group-outline" style="width: 50%">
-                                                <select class="form-control filter-select" name="nome_do_professor"
-                                                    id="nome_do_professor">
-                                                    <option value="">Nome do Professor</option>
-                                                    @foreach ($professores as $professor)
-                                                        <option value="{{ $professor->name }}">{{ $professor->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Fechar</button>
+                                            <button type="button" class="btn btn-success" id="aplicarFiltros">Aplicar
+                                                Filtros</button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Conteúdo Principal (Tabela + Calendário) -->
-                                <div class="row">
-                                    <!-- Coluna da Tabela -->
-                                    <div class="col-md-6 ps-4">
-                                        <div class="table-responsive" style="font-size: 0.9em;">
+                            <!-- Conteúdo Principal (Tabela + Calendário) -->
+                            <div class="row">
+                                <!-- Coluna da Tabela -->
+                                <div class="col-12 col-lg-6 ps-4 mb-4">
+                                    <div class="card mx-3 mt-3">
+                                        <div class="table-responsive">
                                             <table class="table align-items-center mb-0">
                                                 <thead>
                                                     <tr>
@@ -194,52 +209,53 @@
                                             </table>
                                         </div>
                                     </div>
-
-                                    <!-- Coluna do Calendário -->
-                                    @if (Auth::user()->hasRole('aluno'))
-                                        <div class="col-md-6">
-                                            <div class="card" style="margin-top: -150px;">
-
-                                                <div class="card-body">
-                                                    <div id="calendar"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
                                 </div>
 
-                                <!-- Modal de detalhes da permanência -->
-                                <div class="modal fade" id="permanenciaModal" tabindex="-1"
-                                    aria-labelledby="permanenciaModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="permanenciaModalLabel">Detalhes da
-                                                    Permanência</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Fechar"></button>
+                                <!-- Coluna do Calendário -->
+                                @if (Auth::user()->hasRole('aluno'))
+                                    <div class="col-12 col-lg-6" style="margin-top: 0;">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h4 class="text-center mb-0">Calendário</h4>
                                             </div>
-                                            <div class="modal-body">
-                                                <p><strong>Disciplina:</strong> <span id="modalDisciplina"></span></p>
-                                                <p><strong>Curso:</strong> <span id="modalCurso"></span></p>
-                                                <p><strong>Turno:</strong> <span id="modalTurno"></span></p>
-                                                <p><strong>Professor:</strong> <span id="modalProfessor"></span></p>
-                                                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-                                                <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-                                                <p><strong>Duração:</strong> <span id="modalDuracao"></span></p>
-                                                <p><strong>Sala:</strong> <span id="modalSala"></span></p>
-                                                <p><strong>Horário Inicial:</strong> <span
-                                                        id="modalHorarioInicial"></span>
-                                                </p>
-                                                <p><strong>Horário Final:</strong> <span id="modalHorarioFinal"></span>
-                                                </p>
+                                            <div class="card-body">
+                                                <div id="calendar"></div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Fechar</button>
-                                                <button type="button" class="btn btn-primary"
-                                                    id="confirmarPermanencia">Confirmar Permanência</button>
-                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Modal de detalhes da permanência -->
+                            <div class="modal fade" id="permanenciaModal" tabindex="-1"
+                                aria-labelledby="permanenciaModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="permanenciaModalLabel">Detalhes da
+                                                Permanência</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Fechar"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Disciplina:</strong> <span id="modalDisciplina"></span></p>
+                                            <p><strong>Curso:</strong> <span id="modalCurso"></span></p>
+                                            <p><strong>Turno:</strong> <span id="modalTurno"></span></p>
+                                            <p><strong>Professor:</strong> <span id="modalProfessor"></span></p>
+                                            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                                            <p><strong>Duração:</strong> <span id="modalDuracao"></span></p>
+                                            <p><strong>Sala:</strong> <span id="modalSala"></span></p>
+                                            <p><strong>Horário Inicial:</strong> <span id="modalHorarioInicial"></span>
+                                            </p>
+                                            <p><strong>Horário Final:</strong> <span id="modalHorarioFinal"></span>
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Fechar</button>
+                                            <button type="button" class="btn btn-primary"
+                                                id="confirmarPermanencia">Confirmar Permanência</button>
                                         </div>
                                     </div>
                                 </div>
@@ -248,6 +264,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </main>
     <x-plugins></x-plugins>
@@ -371,12 +388,12 @@
             });
 
             $(document).ready(function() {
-                var $table = $('.table');
-                var $tbody = $table.find('tbody');
                 var originalRows = $('.permanencia-row').get();
 
-                $('.filter-select').on('change', function() {
+                // Manipulador do botão Aplicar Filtros
+                $('#aplicarFiltros').on('click', function() {
                     filterTable();
+                    $('#filterModal').modal('hide');
                 });
 
                 function filterTable() {
@@ -401,6 +418,7 @@
                     });
 
                     // Reposicionar as linhas na tabela
+                    var $tbody = $('.table tbody');
                     $tbody.empty();
                     $(rows).each(function(index, row) {
                         $tbody.append(row);
@@ -425,3 +443,87 @@
         });
     </script>
 </x-layout>
+
+<style>
+    /* Estilos para desktop (telas grandes) */
+    @media (min-width: 992px) {
+        .col-lg-6 #calendar {
+            margin-top: -85px;
+        }
+    }
+
+    /* Ajustes para tablets */
+    @media (max-width: 991px) {
+        .input-group-outline {
+            width: 100% !important;
+        }
+
+        .ps-4 {
+            padding-left: 1rem !important;
+        }
+
+        /* Remove a margem negativa em telas menores */
+        .col-sm-6[style*="margin-left"] {
+            margin-left: 0 !important;
+        }
+    }
+
+    /* Ajustes para mobile */
+    @media (max-width: 576px) {
+        .container-fluid {
+            padding: 1rem;
+        }
+
+        .table-responsive {
+            font-size: 0.8em;
+        }
+
+        .input-group-outline {
+            margin-bottom: 1rem;
+        }
+
+        /* Remove a margem negativa em mobile */
+        .col-sm-6[style*="margin-left"] {
+            margin-left: 0 !important;
+        }
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .btn-close {
+        color: white;
+    }
+
+    .modal-footer {
+        border-top: none;
+    }
+
+    .input-group-outline {
+        width: 100% !important;
+    }
+
+    .btn-outline-white {
+        border: 2px solid white !important;
+        color: white !important;
+    }
+
+    .btn-outline-white:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .modal-header {
+        border-radius: 10px 10px 0 0;
+    }
+
+    .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+</style>

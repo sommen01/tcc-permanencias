@@ -23,6 +23,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\PermanenciaController;
 use App\Http\Controllers\AlunoPerfilController;
+use App\Http\Controllers\PdfController;
 
 Route::get('/permanencias/{permanencia}/edit', [PermanenciaController::class, 'edit'])->name('permanencias.edit');
 Route::put('/permanencias/{permanencia}', [PermanenciaController::class, 'update'])->name('permanencias.update');
@@ -112,5 +113,9 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::post('/confirmar-permanencia', [PermanenciaController::class, 'confirmarPermanencia'])->name('confirmar_permanencia');
 Route::get('/listar-confirmados', [PermanenciaController::class, 'listarConfirmados'])->name('listar_confirmados');
+
+Route::get('/download-alunos-confirmados', [PdfController::class, 'downloadAlunosConfirmados'])
+    ->name('download.alunos-confirmados')
+    ->middleware('auth');
 
 

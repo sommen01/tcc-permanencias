@@ -21,12 +21,12 @@
                                             style="border: 2px solid white;">
                                             <i class="material-icons">add</i> Cadastrar
                                         </a>
+                                        <a href="{{ route('download.alunos-confirmados') }}"
+                                            class="btn btn-success me-3 btn-outline-white"
+                                            style="border: 2px solid white;">
+                                            <i class="material-icons">download</i> Baixar PDF Alunos
+                                        </a>
                                     @endif
-                                    <button type="button" class="btn btn-success me-3 btn-outline-white"
-                                        data-bs-toggle="modal" data-bs-target="#filterModal"
-                                        style="border: 2px solid white;">
-                                        <i class="material-icons">filter_list</i> Filtrar
-                                    </button>
 
                                     @if (Auth::user()->hasRole('aluno'))
                                         <a href="{{ route('tabela.pdf') }}"
@@ -35,6 +35,12 @@
                                             <i class="material-icons">download</i> Baixar PDF
                                         </a>
                                     @endif
+
+                                    <button type="button" class="btn btn-success me-3 btn-outline-white"
+                                        data-bs-toggle="modal" data-bs-target="#filterModal"
+                                        style="border: 2px solid white;">
+                                        <i class="material-icons">filter_list</i> Filtrar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -298,7 +304,7 @@
                                                                     Email</th>
                                                                 <th
                                                                     class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                                    Data Confirmação</th>
+                                                                    Permanência</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -334,7 +340,8 @@
                                                                         </td>
                                                                         <td>
                                                                             <p class="text-xs text-secondary mb-0">
-                                                                                {{ \Carbon\Carbon::parse($confirmacao->created_at)->format('d/m/Y H:i') }}
+                                                                                {{ \Carbon\Carbon::parse($permanencia->data)->format('d/m/Y') }}
+                                                                                - {{ $permanencia->disciplina }}
                                                                             </p>
                                                                         </td>
                                                                     </tr>

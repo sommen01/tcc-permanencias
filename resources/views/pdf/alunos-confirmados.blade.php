@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Tabela de Permanências</title>
+    <title>Alunos Confirmados</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,41 +45,35 @@
 
 <body>
     <div class="header">
-        <h2>Tabela de Permanências</h2>
-        <p>Data de Geração: {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</p>
+        <h2>Relatório de Alunos Confirmados</h2>
+        <p>Professor: {{ $professor->name }}</p>
+        <p>Data de Geração: {{ $dataGeracao }}</p>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th>Disciplina</th>
-                <th>Professor</th>
-                <th>Data</th>
-                <th>Horário</th>
-                <th>Sala</th>
+                <th>Aluno</th>
                 <th>Curso</th>
-                <th>Turno</th>
+                <th>Email</th>
+                <th>Permanência</th>
+                <th>Horário</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($dados as $dado)
+            @foreach ($confirmacoes as $confirmacao)
                 <tr>
-                    <td>{{ $dado->disciplina }}</td>
-                    <td>{{ $dado->nome_do_professor }}</td>
-                    <td>{{ \Carbon\Carbon::parse($dado->data)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($dado->hora_inicio)->format('H:i') }} -
-                        {{ \Carbon\Carbon::parse($dado->hora_fim)->format('H:i') }}</td>
-                    <td>{{ $dado->sala }}</td>
-                    <td>{{ $dado->curso }}</td>
-                    <td>{{ $dado->turno }}</td>
+                    <td>{{ $confirmacao->nome_aluno }}</td>
+                    <td>{{ $confirmacao->curso }}</td>
+                    <td>{{ $confirmacao->email_aluno }}</td>
+                    <td>{{ Carbon\Carbon::parse($confirmacao->data)->format('d/m/Y') }} - {{ $confirmacao->disciplina }}
+                    </td>
+                    <td>{{ Carbon\Carbon::parse($confirmacao->hora_inicio)->format('H:i') }} -
+                        {{ Carbon\Carbon::parse($confirmacao->hora_fim)->format('H:i') }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-
-    <div class="footer">
-        <p>Documento gerado em {{ \Carbon\Carbon::now()->format('d/m/Y H:i') }}</p>
-    </div>
 </body>
 
 </html>

@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {   $this->call([
         ProfessorUserSeeder::class,
+        PermanenciasSeeder::class
     ]);
          User::factory()->create([
             'name' => 'Admin',

@@ -166,12 +166,12 @@
                                                             Horário</th>
                                                         <th
                                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Confirmar</th>
-                                                        @if (Auth::user()->hasRole('professor'))
-                                                            <th
-                                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                                Ações</th>
-                                                        @endif
+                                                            @if (Auth::user()->hasRole('professor'))
+                                                                AÇÕES
+                                                            @else
+                                                                CONFIRMAR PRESENÇA
+                                                            @endif
+                                                        </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -232,52 +232,30 @@
                                                                     {{ \Carbon\Carbon::parse($permanencia->hora_fim)->format('H:i') }}
                                                                 </span>
                                                             </td>
-                                                            @if (Auth::user()->hasRole('professor'))
-                                                                <td class="align-middle text-center">
-                                                                    @if ($permanencia->professor_id == Auth::id())
-                                                                        <a href="{{ route('permanencias.edit', $permanencia->id) }}"
-                                                                            class="btn btn-info btn-sm">Editar</a>
-                                                                        <button
-                                                                            class="btn btn-danger btn-sm excluir-permanencia"
-                                                                            data-id="{{ $permanencia->id }}">Excluir</button>
-                                                                    @endif
-                                                                </td>
-                                                            @endif
-                                                            @if (Auth::user()->hasRole('aluno'))
-                                                                <td class="align-middle text-center">
-                                                                    @php
-                                                                        $jaConfirmou = \App\Models\PermanenciaConfirmacao::where(
-                                                                            'permanencia_id',
-                                                                            $permanencia->id,
-                                                                        )
-                                                                            ->where('aluno_id', Auth::id())
-                                                                            ->exists();
-                                                                    @endphp
-
-                                                                    @if ($jaConfirmou)
-                                                                        <button
-                                                                            class="btn bg-gradient-success btn-sm mb-0"
-                                                                            disabled>
-                                                                            <i class="material-icons">check_circle</i>
-                                                                            Confirmado
+                                                            <td>
+                                                                @if (Auth::user()->hasRole('professor'))
+                                                                    <a href="{{ route('permanencias.edit', $permanencia->id) }}"
+                                                                        class="btn btn-info btn-sm">
+                                                                        <i class="material-icons">edit</i>
+                                                                    </a>
+                                                                    <form
+                                                                        action="{{ route('permanencias.destroy', $permanencia->id) }}"
+                                                                        method="POST" style="display: inline;">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit"
+                                                                            class="btn btn-danger btn-sm">
+                                                                            <i class="material-icons">delete</i>
                                                                         </button>
-                                                                    @elseif ($podeConfirmar)
-                                                                        <button
-                                                                            class="btn bg-gradient-info btn-sm mb-0 confirmar-permanencia"
-                                                                            data-id="{{ $permanencia->id }}">
-                                                                            <i class="material-icons">check</i>
-                                                                            Confirmar
-                                                                        </button>
-                                                                    @else
-                                                                        <button
-                                                                            class="btn bg-gradient-secondary btn-sm mb-0"
-                                                                            disabled>
-                                                                            <i class="material-icons">block</i>
-                                                                            Indisponível
-                                                                        </button>
-                                                                    @endif
-                                                                </td>
-                                                            @endif
+                                                                    </form>
+                                                                @else
+                                                                    <button type="button"
+                                                                        class="btn btn-success btn-sm"
+                                                                        onclick="confirmarPresenca({{ $permanencia->id }})">
+                                                                        <i class="material-icons">check</i> Confirmar
+                                                                    </button>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>

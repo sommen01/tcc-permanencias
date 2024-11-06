@@ -11,36 +11,42 @@
                     @endif
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                            <div
-                                class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
-                                <h6 class="text-white text-capitalize ps-3">Permanências</h6>
-                                <div class="d-flex">
-                                    @if (Auth::user()->hasRole('professor'))
-                                        <a href="{{ route('permanencias.create') }}"
-                                            class="btn btn-success me-3 btn-outline-white"
-                                            style="border: 2px solid white;">
-                                            <i class="material-icons">add</i> Cadastrar
-                                        </a>
-                                        <a href="{{ route('download.alunos-confirmados') }}"
-                                            class="btn btn-success me-3 btn-outline-white"
-                                            style="border: 2px solid white;">
-                                            <i class="material-icons">download</i> Baixar PDF Alunos
-                                        </a>
-                                    @endif
+                            <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                                <div class="d-flex justify-content-between align-items-center px-3">
+                                    <h6 class="text-white text-capitalize ps-3 mb-0">Permanências</h6>
 
-                                    @if (Auth::user()->hasRole('aluno'))
-                                        <a href="{{ route('tabela.pdf') }}"
-                                            class="btn btn-success me-3 btn-outline-white"
-                                            style="border: 2px solid white;">
-                                            <i class="material-icons">download</i> Baixar PDF
-                                        </a>
-                                    @endif
+                                    <div class="d-flex gap-2">
+                                        @if (Auth::user()->hasRole('professor'))
+                                            <a href="{{ route('permanencias.create') }}"
+                                                class="btn btn-success btn-outline-white"
+                                                style="border: 2px solid white;">
+                                                <i class="material-icons">add</i>
+                                                <span>Cadastrar</span>
+                                            </a>
+                                            <a href="{{ route('download.alunos-confirmados') }}"
+                                                class="btn btn-success btn-outline-white"
+                                                style="border: 2px solid white;">
+                                                <i class="material-icons">download</i>
+                                                <span>Baixar PDF Alunos</span>
+                                            </a>
+                                        @endif
 
-                                    <button type="button" class="btn btn-success me-3 btn-outline-white"
-                                        data-bs-toggle="modal" data-bs-target="#filterModal"
-                                        style="border: 2px solid white;">
-                                        <i class="material-icons">filter_list</i> Filtrar
-                                    </button>
+                                        @if (Auth::user()->hasRole('aluno'))
+                                            <a href="{{ route('tabela.pdf') }}"
+                                                class="btn btn-success btn-outline-white"
+                                                style="border: 2px solid white;">
+                                                <i class="material-icons">download</i>
+                                                <span>Baixar PDF</span>
+                                            </a>
+                                        @endif
+
+                                        <button type="button" class="btn btn-success btn-outline-white"
+                                            data-bs-toggle="modal" data-bs-target="#filterModal"
+                                            style="border: 2px solid white;">
+                                            <i class="material-icons">filter_list</i>
+                                            <span>Filtrar</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -806,6 +812,113 @@
         to {
             bottom: 0;
             opacity: 0;
+        }
+    }
+
+    /* Ajustes de responsividade */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding: 0.5rem !important;
+        }
+
+        .card-header {
+            padding: 0.5rem !important;
+        }
+
+        .btn {
+            padding: 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .material-icons {
+            font-size: 18px !important;
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        /* Ajusta o espaçamento dos botões em mobile */
+        .d-flex.flex-column.flex-md-row {
+            width: 100%;
+        }
+
+        /* Centraliza os botões em telas pequenas */
+        .d-flex.flex-column.flex-md-row.gap-2 {
+            align-items: stretch;
+        }
+
+        /* Ajusta a largura dos botões em mobile */
+        .btn-outline-white {
+            width: 100%;
+            margin-right: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ajusta o modal de filtros para mobile */
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+
+        /* Ajusta a tabela para mobile */
+        .table-responsive {
+            margin: 0 -0.5rem;
+        }
+
+        .table td,
+        .table th {
+            padding: 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+
+        .d-flex.gap-2 {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn .material-icons {
+            margin-right: 0;
+        }
+
+        .btn span {
+            display: none;
+        }
+    }
+
+    /* Ajustes para tablets */
+    @media (min-width: 769px) and (max-width: 991px) {
+        .container-fluid {
+            padding: 1rem !important;
+        }
+
+        .btn {
+            padding: 0.6rem !important;
+        }
+
+        .gap-2 {
+            gap: 0.8rem !important;
+        }
+    }
+
+    /* Mantém o espaçamento original em desktops */
+    @media (min-width: 992px) {
+        .gap-2 {
+            gap: 1rem !important;
         }
     }
 </style>

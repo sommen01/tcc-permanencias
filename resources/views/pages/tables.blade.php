@@ -7,20 +7,27 @@
             <div class="row">
                 <div class="col-12">
                     @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
+                        <div id="snackbar" class="show">{{ session('success') }}</div>
                     @endif
                     <div class="card my-4">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                             <div
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3">Permanências</h6>
-                                <button type="button" class="btn btn-success me-3 btn-outline-white"
-                                    data-bs-toggle="modal" data-bs-target="#filterModal"
-                                    style="border: 2px solid white;">
-                                    <i class="material-icons">filter_list</i> Filtrar
-                                </button>
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-success me-3 btn-outline-white"
+                                        data-bs-toggle="modal" data-bs-target="#filterModal"
+                                        style="border: 2px solid white;">
+                                        <i class="material-icons">filter_list</i> Filtrar
+                                    </button>
+                                    @if (Auth::user()->hasRole('aluno'))
+                                        <a href="{{ route('tabela.pdf') }}"
+                                            class="btn btn-success me-3 btn-outline-white"
+                                            style="border: 2px solid white;">
+                                            <i class="material-icons">download</i> Baixar PDF
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         <div class="card-body px-0 pb-2">
@@ -526,4 +533,158 @@
     .btn-close-white {
         filter: brightness(0) invert(1);
     }
+
+    #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: white;
+        /* Texto branco */
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #snackbar.show {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 1s;
+        animation: fadein 0.5s, fadeout 0.5s 1s;
+    }
+
+    @-webkit-keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @-webkit-keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: white;
+        /* Texto branco */
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+    }
+
+    #snackbar.show {
+        visibility: visible;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2s;
+        animation: fadein 0.5s, fadeout 0.5s 2s;
+    }
+
+    @-webkit-keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 30px;
+            opacity: 1;
+        }
+    }
+
+    @-webkit-keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    @keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
 </style>
+
+<script>
+    window.onload = function() {
+        var snackbar = document.getElementById("snackbar");
+        if (snackbar) {
+            snackbar.className = "show";
+            setTimeout(function() {
+                snackbar.className = snackbar.className.replace("show", "");
+            }, 1500);
+        }
+    }
+</script>

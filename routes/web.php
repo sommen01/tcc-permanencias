@@ -43,7 +43,7 @@ Route::get('/home', function () {
 Route::get('auth/google', [SessionsController::class, 'redirectToGoogle'])->name('login.google');
 Route::get('auth/google/callback', [SessionsController::class, 'handleGoogleCallback']);
 
-
+Route::get('/tabela/pdf', [PermanenciaController::class, 'baixarPdf'])->name('tabela.pdf');
 Route::get('/complete-profile', [AlunoPerfilController::class, 'show'])->middleware('auth');
 Route::post('/complete-profile', [AlunoPerfilController::class, 'store'])->middleware('auth');
 Route::get('/permanencias/confirmar/{id}/{token}', [PermanenciaController::class, 'confirmarPermanencia'])->name('permanencias.confirmar');

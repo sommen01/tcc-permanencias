@@ -98,7 +98,7 @@ class SessionsController extends Controller
     
             $allowedDomains = ['estudante.ifms.edu.br', 'ifms.edu.br'];
             if (!in_array($emailDomain, $allowedDomains)) {
-                return redirect('/sign-in')->with('error', 'Apenas emails institucionais são permitidos.');
+                return redirect('/sign-in')->with('snackbar', 'Somente é permitido logar com conta institucional');
             }
     
             $user = User::where('email', $googleUser->getEmail())->first();
@@ -129,7 +129,7 @@ class SessionsController extends Controller
     
             return redirect()->route('tables'); 
         } catch (\Exception $e) {
-            return redirect('/sign-in')->with('error', 'Failed to login with Google: ' . $e->getMessage());
+            return redirect('/sign-in')->with('snackbar', 'Falha ao fazer login com Google: ' . $e->getMessage());
         }
     }
 }

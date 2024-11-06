@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Google_Client;
@@ -126,6 +126,26 @@ class PermanenciaController extends Controller
         return view('permanencias.edit', compact('permanencia', 'professores'));
     }
 
+    public function baixarPdf()
+    {
+        $dados = Permanencia::all()->map(function ($item) {
+            $diasSemana = [
+                1 => 'Segunda-feira',
+                2 => 'Terça-feira',
+                3 => 'Quarta-feira',
+                4 => 'Quinta-feira',
+                5 => 'Sexta-feira',
+                6 => 'Sábado',
+                7 => 'Domingo'
+            ];
+            $item->dia_semana_nome = $diasSemana[$item->dia_semana];
+            return $item;
+        });
+    
+        $pdf = PDF::loadView('pages.pdf', compact('dados'));
+    
+        return $pdf->download('tabela.pdf');
+    }
     public function update(Request $request, Permanencia $permanencia)
     {
         if (Auth::id() !== $permanencia->professor_id) {

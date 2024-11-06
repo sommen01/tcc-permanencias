@@ -110,4 +110,7 @@ Route::group(['middleware' => 'auth'], function () {
 	})->name('user-profile');
 });
 
+Route::post('/confirmar-permanencia', [PermanenciaController::class, 'confirmarPermanencia'])->name('confirmar_permanencia');
+Route::get('/listar-confirmados', [PermanenciaController::class, 'listarConfirmados'])->name('listar_confirmados');
+
 

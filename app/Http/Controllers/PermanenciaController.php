@@ -12,6 +12,7 @@ use App\Models\Permanencia;
 use App\Mail\ConfirmacaoPermanencia;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\PermanenciaConfirmacao;
 
 class PermanenciaController extends Controller
 {
@@ -248,16 +249,80 @@ END:VCALENDAR";
 
     }
 
-    public function confirmarPermanencia($id, $token)
+    public function confirmarPermanencia(Request $request)
     {
-        $permanenciaId = decrypt($token);
+        try {
+            // Validação básica do request
+            $request->validate([
+                'permanencia_id' => 'required|exists:permanencias,id'
+            ]);
 
-        $permanencia = Permanencia::findOrFail($permanenciaId);
+            $permanencia = Permanencia::findOrFail($request->permanencia_id);
+            
+            // Verifica se a permanência está no horário válido
+            $agora = now();
+            $dataHoraFim = Carbon::parse($permanencia->data)->setTimeFromTimeString($permanencia->hora_fim);
+            
+            if ($agora->isAfter($dataHoraFim)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Esta permanência já foi encerrada.'
+                ]);
+            }
+            
+            // Verifica se o aluno já confirmou
+            $jaConfirmou = PermanenciaConfirmacao::where('permanencia_id', $permanencia->id)
+                ->where('aluno_id', Auth::id())
+                ->exists();
+                
+            if ($jaConfirmou) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Você já confirmou presença nesta permanência.'
+                ]);
+            }
+            
+            // Salva a confirmação
+            PermanenciaConfirmacao::create([
+                'permanencia_id' => $permanencia->id,
+                'aluno_id' => Auth::id(),
+                'nome_aluno' => Auth::user()->name,
+                'email_aluno' => Auth::user()->email,
+                'curso' => Auth::user()->curso ?? 'Não informado' 
+            ]);
+            
+            return response()->json(['success' => true]);
 
-        Mail::to($permanencia->email_do_professor)->send(new ConfirmacaoPermanencia($permanencia));
-        $this->salvarEventoNoGoogleCalendar($permanencia);
+        } catch (\Exception $e) {
+            \Log::error('Erro ao confirmar permanência: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao confirmar presença: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
-        return redirect()->back()->with('success', 'Permanência confirmada e evento agendado no Google Calendar!');
+    public function listarConfirmados(Request $request)
+    {
+        $permanencia = Permanencia::findOrFail($request->permanencia_id);
+        
+        // Limpa confirmações antigas
+        $this->limparConfirmacoesAntigas($permanencia);
+        
+        $confirmacoes = PermanenciaConfirmacao::where('permanencia_id', $permanencia->id)
+            ->select('nome_aluno as nome', 'email_aluno as email', 'curso')
+            ->get();
+        
+        return response()->json(['alunos' => $confirmacoes]);
+    }
+
+    private function limparConfirmacoesAntigas($permanencia)
+    {
+        $dataHoraFim = Carbon::parse($permanencia->data)->setTimeFromTimeString($permanencia->hora_fim);
+        
+        if (now()->isAfter($dataHoraFim)) {
+            PermanenciaConfirmacao::where('permanencia_id', $permanencia->id)->delete();
+        }
     }
 
     protected function salvarEventoNoGoogleCalendar($permanencia)

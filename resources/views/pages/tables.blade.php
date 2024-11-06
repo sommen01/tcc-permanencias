@@ -15,11 +15,19 @@
                                 class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center">
                                 <h6 class="text-white text-capitalize ps-3">Permanências</h6>
                                 <div class="d-flex">
+                                    @if (Auth::user()->hasRole('professor'))
+                                        <a href="{{ route('permanencias.create') }}"
+                                            class="btn btn-success me-3 btn-outline-white"
+                                            style="border: 2px solid white;">
+                                            <i class="material-icons">add</i> Cadastrar
+                                        </a>
+                                    @endif
                                     <button type="button" class="btn btn-success me-3 btn-outline-white"
                                         data-bs-toggle="modal" data-bs-target="#filterModal"
                                         style="border: 2px solid white;">
                                         <i class="material-icons">filter_list</i> Filtrar
                                     </button>
+
                                     @if (Auth::user()->hasRole('aluno'))
                                         <a href="{{ route('tabela.pdf') }}"
                                             class="btn btn-success me-3 btn-outline-white"
@@ -108,10 +116,10 @@
                                 </div>
                             </div>
 
-                            <!-- Conteúdo Principal (Tabela + Calendário) -->
+                            <!-- Conteúdo Principal (Tabela + Lista de Confirmados/Calendário) -->
                             <div class="row">
-                                <!-- Coluna da Tabela -->
-                                <div class="col-12 col-lg-6 ps-4 mb-4">
+                                <!-- Coluna da Tabela (Lado Esquerdo) -->
+                                <div class="col-12 col-lg-6">
                                     <div class="card mx-3 mt-3">
                                         <div class="table-responsive">
                                             <table class="table align-items-center mb-0">
@@ -144,6 +152,9 @@
                                                         <th
                                                             class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                             Horário</th>
+                                                        <th
+                                                            class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                            Confirmar</th>
                                                         @if (Auth::user()->hasRole('professor'))
                                                             <th
                                                                 class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -153,6 +164,16 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach ($permanencias as $permanencia)
+                                                        @php
+                                                            $dataHoraInicio = \Carbon\Carbon::parse(
+                                                                $permanencia->data,
+                                                            )->setTimeFromTimeString($permanencia->hora_inicio);
+                                                            $dataHoraFim = \Carbon\Carbon::parse(
+                                                                $permanencia->data,
+                                                            )->setTimeFromTimeString($permanencia->hora_fim);
+                                                            $agora = \Carbon\Carbon::now();
+                                                            $podeConfirmar = $agora->lessThan($dataHoraFim);
+                                                        @endphp
                                                         <tr class="permanencia-row">
                                                             <td>
                                                                 <div class="d-flex px-2 py-1">
@@ -210,6 +231,41 @@
                                                                     @endif
                                                                 </td>
                                                             @endif
+                                                            @if (Auth::user()->hasRole('aluno'))
+                                                                <td class="align-middle text-center">
+                                                                    @php
+                                                                        $jaConfirmou = \App\Models\PermanenciaConfirmacao::where(
+                                                                            'permanencia_id',
+                                                                            $permanencia->id,
+                                                                        )
+                                                                            ->where('aluno_id', Auth::id())
+                                                                            ->exists();
+                                                                    @endphp
+
+                                                                    @if ($jaConfirmou)
+                                                                        <button
+                                                                            class="btn bg-gradient-success btn-sm mb-0"
+                                                                            disabled>
+                                                                            <i class="material-icons">check_circle</i>
+                                                                            Confirmado
+                                                                        </button>
+                                                                    @elseif ($podeConfirmar)
+                                                                        <button
+                                                                            class="btn bg-gradient-info btn-sm mb-0 confirmar-permanencia"
+                                                                            data-id="{{ $permanencia->id }}">
+                                                                            <i class="material-icons">check</i>
+                                                                            Confirmar
+                                                                        </button>
+                                                                    @else
+                                                                        <button
+                                                                            class="btn bg-gradient-secondary btn-sm mb-0"
+                                                                            disabled>
+                                                                            <i class="material-icons">block</i>
+                                                                            Indisponível
+                                                                        </button>
+                                                                    @endif
+                                                                </td>
+                                                            @endif
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -218,19 +274,89 @@
                                     </div>
                                 </div>
 
-                                <!-- Coluna do Calendário -->
-                                @if (Auth::user()->hasRole('aluno'))
-                                    <div class="col-12 col-lg-6" style="margin-top: 0;">
+                                <!-- Coluna Direita -->
+                                <div class="col-12 col-lg-6">
+                                    @if (Auth::user()->hasRole('professor'))
+                                        <!-- Lista de Alunos Confirmados -->
                                         <div class="card">
-                                            <div class="card-header">
-                                                <h4 class="text-center mb-0">Calendário</h4>
+                                            <div class="card-header p-3">
+                                                <h6 class="mb-0">Alunos Confirmados</h6>
                                             </div>
-                                            <div class="card-body">
+                                            <div class="card-body p-3">
+                                                <div class="table-responsive">
+                                                    <table class="table align-items-center mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th
+                                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                                    Aluno</th>
+                                                                <th
+                                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                                    Curso</th>
+                                                                <th
+                                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                                    Email</th>
+                                                                <th
+                                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                                    Data Confirmação</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($permanencias as $permanencia)
+                                                                @php
+                                                                    $confirmacoes = \App\Models\PermanenciaConfirmacao::where(
+                                                                        'permanencia_id',
+                                                                        $permanencia->id,
+                                                                    )
+                                                                        ->orderBy('created_at', 'desc')
+                                                                        ->get();
+                                                                @endphp
+
+                                                                @foreach ($confirmacoes as $confirmacao)
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div class="d-flex px-2 py-1">
+                                                                                <div
+                                                                                    class="d-flex flex-column justify-content-center">
+                                                                                    <h6 class="mb-0 text-sm">
+                                                                                        {{ $confirmacao->nome_aluno }}
+                                                                                    </h6>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                                {{ $confirmacao->curso }}</p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p class="text-xs text-secondary mb-0">
+                                                                                {{ $confirmacao->email_aluno }}</p>
+                                                                        </td>
+                                                                        <td>
+                                                                            <p class="text-xs text-secondary mb-0">
+                                                                                {{ \Carbon\Carbon::parse($confirmacao->created_at)->format('d/m/Y H:i') }}
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <!-- Calendário para Alunos -->
+                                        <div class="card">
+                                            <div class="card-header p-3">
+                                                <h6 class="mb-0">Calendário de Permanências</h6>
+                                            </div>
+                                            <div class="card-body p-3">
                                                 <div id="calendar"></div>
                                             </div>
                                         </div>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                             </div>
 
                             <!-- Modal de detalhes da permanência -->
@@ -687,4 +813,116 @@
             }, 1500);
         }
     }
+</script>
+
+<!-- Modal de Alunos Confirmados -->
+<div class="modal fade" id="alunosConfirmadosModal" tabindex="-1" aria-labelledby="alunosConfirmadosModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-white" id="alunosConfirmadosModalLabel">Alunos Confirmados</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="listaAlunosConfirmados">
+                    <!-- Lista será preenchida via JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Adicione este script no final do arquivo -->
+<script>
+    $(document).ready(function() {
+        // Confirmar permanência
+        $('.confirmar-permanencia').on('click', function() {
+            const button = $(this);
+            const permanenciaId = button.data('id');
+
+            button.prop('disabled', true);
+
+            $.ajax({
+                url: '{{ route('confirmar_permanencia') }}',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    permanencia_id: permanenciaId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Atualiza o botão para mostrar confirmado
+                        button.removeClass('bg-gradient-info')
+                            .addClass('bg-gradient-success')
+                            .html('<i class="material-icons">check_circle</i> Confirmado')
+                            .prop('disabled', true);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: 'Presença confirmada com sucesso!'
+                        });
+                    } else {
+                        button.prop('disabled', false);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro',
+                            text: response.message || 'Erro ao confirmar presença.'
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    button.prop('disabled', false);
+                    console.error('Erro na requisição:', xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: 'Erro ao confirmar presença. Por favor, tente novamente.'
+                    });
+                }
+            });
+        });
+
+        // Ver alunos confirmados
+        $('.ver-confirmados').on('click', function() {
+            const permanenciaId = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route('listar_confirmados') }}',
+                method: 'GET',
+                data: {
+                    permanencia_id: permanenciaId
+                },
+                success: function(response) {
+                    let html = '<ul class="list-group">';
+                    if (response.alunos.length > 0) {
+                        response.alunos.forEach(aluno => {
+                            html += `
+                            <li class="list-group-item">
+                                <h6 class="mb-0">${aluno.nome}</h6>
+                                <small class="text-muted">Email: ${aluno.email}</small><br>
+                                <small class="text-muted">Curso: ${aluno.curso}</small>
+                            </li>
+                        `;
+                        });
+                    } else {
+                        html +=
+                            '<li class="list-group-item">Nenhum aluno confirmou presença ainda.</li>';
+                    }
+                    html += '</ul>';
+                    $('#listaAlunosConfirmados').html(html);
+                },
+                error: function() {
+                    alert('Erro ao carregar lista de alunos confirmados.');
+                }
+            });
+        });
+    });
 </script>

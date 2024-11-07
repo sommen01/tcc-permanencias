@@ -437,6 +437,14 @@
                 calendar.render();
             }
 
+            function formatTime(time) {
+                if (!time) return '';
+                let [hours, minutes] = time.split(':');
+                hours = hours.padStart(2, '0');
+                minutes = minutes.padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+
             function generateRecurringEvents(permanencias) {
                 var events = [];
                 var today = new Date();
@@ -447,10 +455,16 @@
                     var endDate = permanencia.duracao === 'semestre' ? sixMonthsLater : new Date(startDate);
 
                     while (startDate <= endDate) {
+                        var eventDate = new Date(startDate);
+                        var formattedTime = formatTime(permanencia.hora_inicio);
+                        var [hours, minutes] = formattedTime.split(':');
+                        eventDate.setHours(parseInt(hours), parseInt(minutes), 0);
+
                         events.push({
                             id: permanencia.id,
-                            title: permanencia.disciplina + ' - ' + permanencia.nome_do_professor,
-                            start: new Date(startDate),
+                            title: ` - ${permanencia.disciplina} - ${permanencia.nome_do_professor}`,
+                            start: eventDate,
+                            allDay: false,
                             extendedProps: {
                                 disciplina: permanencia.disciplina,
                                 curso: permanencia.curso,
@@ -460,8 +474,8 @@
                                 status: permanencia.status,
                                 duracao: permanencia.duracao,
                                 sala: permanencia.sala,
-                                hora_inicio: permanencia.hora_inicio,
-                                hora_fim: permanencia.hora_fim
+                                hora_inicio: formatTime(permanencia.hora_inicio),
+                                hora_fim: formatTime(permanencia.hora_fim)
                             }
                         });
 
@@ -476,41 +490,7 @@
                 return events;
             }
 
-            document.querySelectorAll('.excluir-permanencia').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var permanenciaId = this.getAttribute('data-id');
-                    var button = this;
-
-                    if (confirm('Tem certeza que deseja excluir esta permanência?')) {
-                        fetch('{{ route('excluir_permanencia') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({
-                                    permanencia_id: permanenciaId
-                                })
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert('Permanência excluída com sucesso!');
-                                    button.closest('tr').remove();
-                                } else {
-                                    alert('Erro ao excluir permanência: ' + data.message);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Erro:', error);
-                                alert(
-                                    'Erro ao excluir permanência. Por favor, tente novamente.'
-                                );
-                            });
-                    }
-                });
-            });
-
+            // Mantém a função de filtro original
             $(document).ready(function() {
                 var originalRows = $('.permanencia-row').get();
 
@@ -897,6 +877,91 @@
     @media (min-width: 992px) {
         .gap-2 {
             gap: 1rem !important;
+        }
+    }
+
+    /* Adicione ao seu arquivo CSS ou na seção <style> */
+    :root {
+        --fc-border-color: #e5e7eb;
+        --fc-button-bg-color: #4CAF50;
+        --fc-button-border-color: #4CAF50;
+        --fc-button-hover-bg-color: #45a049;
+        --fc-button-hover-border-color: #45a049;
+        --fc-button-active-bg-color: #45a049;
+    }
+
+    .fc {
+        font-family: 'Poppins', sans-serif;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        background: white;
+        padding: 15px;
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.2em;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .fc .fc-button {
+        border-radius: 8px;
+        text-transform: uppercase;
+        font-weight: 500;
+        font-size: 0.9em;
+        padding: 8px 15px;
+        transition: all 0.3s ease;
+    }
+
+    .fc .fc-daygrid-day {
+        transition: all 0.2s ease;
+    }
+
+    .fc .fc-daygrid-day:hover {
+        background-color: #f8f9fa;
+    }
+
+    .fc .fc-daygrid-day-number {
+        font-size: 1em;
+        color: #4a5568;
+        padding: 8px;
+    }
+
+    .fc .fc-event {
+        border-radius: 6px;
+        border: none;
+        padding: 3px 5px;
+        font-size: 0.85em;
+        transition: transform 0.2s ease;
+    }
+
+    .fc .fc-event:hover {
+        transform: scale(1.02);
+    }
+
+    .fc .fc-day-today {
+        background: #e8f5e9 !important;
+    }
+
+    .fc .fc-highlight {
+        background: #f0f9ff !important;
+    }
+
+    /* Cores personalizadas para eventos */
+    .fc-event {
+        background-color: #4CAF50 !important;
+        border-left: 4px solid #45a049 !important;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .fc .fc-toolbar {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.1em;
         }
     }
 </style>
